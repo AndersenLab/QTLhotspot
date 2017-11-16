@@ -225,9 +225,9 @@ mappos <- merge(map, conv, by= "id")
 colnames(mappos)[3:4] <- c("cM", "pos")
 
 #load in dataframe of unique QTL (annotated_lod df for each trait you are using for the plot, distinct will be called later in case of multiple peaks per QTL)
-load("~/Dropbox/AndersenLab/QTLpaper/data/FileS4_uniqueQTL.RData")
+load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS4_uniqueQTL.RData")
 
-QTLperbin <- function(mappos, uniqueQTL, numcm = 50, pval = .05, bonferroni = "FALSE") {
+QTLperbin <- function(mappos, uniqueQTL, numcm = 50, pval = .01, bonferroni = "FALSE") {
     
     #round to the nearest bin (first bin is bin "0")
     rounded <- mappos %>%
