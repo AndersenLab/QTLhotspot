@@ -4,7 +4,7 @@ library(cowplot)
 library(grid)
 
 ######## Figure 1: Unique QTL plot ########
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS4_uniqueQTL.RData")
+load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS5_uniqueQTL.RData")
 
 textsize = 10
 titlesize = 12
@@ -99,8 +99,8 @@ grid.draw(gt)
 dev.off()
 
 ######## Figure 2: VE v. H2 and H2 v. h2 ########
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS5_allAnnotatedLods.RData")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS4_uniqueQTL.RData")
+load("~/Dropbox/AndersenLab/QTLpaper/data/final/fileS4_allAnnotatedLods.RData")
+load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS5_uniqueQTL.RData")
 load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS2_varianceComponents.RData")
 drugclasses <- read.csv("~/Dropbox/AndersenLab/QTLpaper/data/drugclasses.csv") %>%
     dplyr::mutate(class = sub("Heavy Metal", "Heavy metal", class))
@@ -225,7 +225,7 @@ mappos <- merge(map, conv, by= "id")
 colnames(mappos)[3:4] <- c("cM", "pos")
 
 #load in dataframe of unique QTL (annotated_lod df for each trait you are using for the plot, distinct will be called later in case of multiple peaks per QTL)
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS4_uniqueQTL.RData")
+load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS5_uniqueQTL.RData")
 
 QTLperbin <- function(mappos, uniqueQTL, numcm = 50, pval = .01, bonferroni = "FALSE") {
     
@@ -330,7 +330,7 @@ ggsave(summary[[1]], filename = "~/Dropbox/AndersenLab/QTLpaper/figures/final/fi
 ####### Figure 4: NIL and CSS overview figure #####
 load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS6_allNILCSSregressed.Rdata")
 load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS8_css_nil_stats.RData")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS5_allAnnotatedLods.RData")
+load("~/Dropbox/AndersenLab/QTLpaper/data/final/fileS4_allAnnotatedLods.RData")
 load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS2_varianceComponents.RData")
 
 #VE_SE_QTL
