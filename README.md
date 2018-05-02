@@ -3,13 +3,13 @@
 This repository contains all the processed data and scripts required to recapitulate all results from the paper.
 
 ## Figures
-**20180419_main_figures.pdf** All main figures from the text.
-**supplementing_figures.pdf** All supplemental figures from the text.
+- **20180419_main_figures.pdf** All main figures from the text.
+- **supplementing_figures.pdf** All supplemental figures from the text.
 
 ## Scripts
 
-**20180419_main_figures.Rmd** uses the supplemental data provided to reproduce all main figures from the text.
-**supplementing_figures.Rmd** uses the supplemental data provided to reproduce all supplemental figures from the text.
+- **20180419_main_figures.Rmd** uses the supplemental data provided to reproduce all main figures from the text.
+- **supplementing_figures.Rmd** uses the supplemental data provided to reproduce all supplemental figures from the text.
 
 
 ## Supplementary Data Files
