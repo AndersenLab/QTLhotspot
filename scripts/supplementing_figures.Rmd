@@ -3,7 +3,27 @@ output: pdf_document
 geometry: margin=1in
 mainfont: Times New Roman
 ---
-```{r s1,warning=F, message=F, echo=F,comment="K",results='asis'}
+
+```{r s1,warning=F, message=F, echo=F,comment="K",results='hide'}
+#load all datasets
+
+library(repmis)
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_correlated_traits.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.RData?raw=TRUE")
+library(linkagemapping)
+data("N2xCB4856cross")
+
+```
+
+
+```{r s1_2,warning=F, message=F, echo=F,comment="K",results='asis'}
 library(pander)
 library(stringr)
 library(knitr)
@@ -11,6 +31,7 @@ library(scales)
 library(cowplot)
 library(tidyverse)
 library(reshape2)
+library(repmis)
 
 panderOptions('knitr.auto.asis', TRUE)
 
@@ -18,7 +39,8 @@ cat("\n\n\n")
 cat("\n\n\\pagebreak\n")
     
 #Load Data
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS1_dosedata.RData")
+#source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.RData?raw=TRUE")
+
 #### Dose response
 dosedrugs <- c("cadmium", "carmustine", "chlorothalonil", "chlorpyrifos", "cisplatin", "copper", "diquat", "fluoxetine", "FUdR", "irinotecan", "mechlorethamine", "paraquat", "silver", "topotecan", "tunicamycin", "vincristine")
 
@@ -75,7 +97,7 @@ splitbydose <- split(traitcordrugs, paste(traitcordrugs$condition))
 
 ```
 
-```{r s1_2, fig.width=7.5, fig.height=10,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
+```{r s1_3, fig.width=7.5, fig.height=10,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
 
 for (i in 1:length(dosedrugs)) {
         
@@ -86,26 +108,26 @@ for (i in 1:length(dosedrugs)) {
         traitdf$trait <- factor(traitdf$trait, levels = c("norm.n","q25.TOF","q75.TOF"), labels = c("Brood Size", "Small Size", "Large Size"))
         
         doseplot <- ggplot2::ggplot(traitdf) +
-            ggplot2::theme_bw()+
-            ggplot2::aes(x=condition, y=phenotype, fill=strain) +
-            ggplot2::geom_point(position = position_jitterdodge(jitter.width = 0.2), size = .5)+
-            ggplot2::geom_boxplot(outlier.size=NA, alpha = .5)+
-            ggplot2::scale_x_discrete(limits=levels(concentrations[[i]]), labels = doselabels[[i]])+
-            ggplot2::scale_fill_manual(values=c("blue","green","pink","orange"), guide_legend(title = "Strain"))+
-            ggplot2::ggtitle(Hmisc::capitalize(dosedrugs[i])) +
+          ggplot2::theme_bw()+
+          ggplot2::aes(x=condition, y=phenotype, fill=strain) +
+          ggplot2::geom_point(position = position_jitterdodge(jitter.width = 0.2), size = .5)+
+          ggplot2::geom_boxplot(outlier.size=NA, outlier.color = NA,alpha = .5)+
+          ggplot2::scale_x_discrete(limits=levels(concentrations[[i]]), labels = doselabels[[i]])+
+          ggplot2::scale_fill_manual(values=c("blue","green","pink","orange"), guide_legend(title = "Strain"))+
+          ggplot2::ggtitle(Hmisc::capitalize(dosedrugs[i])) +
           ggplot2::labs(x = "Concentration (µM)", y = "Residual phenotype") +
-            ggplot2::facet_wrap(~ trait, scales = "free") +
-            ggplot2::theme(axis.text.x = ggplot2::element_text(size=10, face = "bold", color="black"),
-                  axis.text.y = ggplot2::element_text(size=10, face = "bold", color="black"),
-                  axis.title.x = ggplot2::element_text(size=12, face = "bold", color="black"),
-                  axis.title.y = ggplot2::element_text(size=12, face = "bold", color="black"),
-                  plot.title = ggplot2::element_text(size=12, face = "bold", color = "black", hjust = .5),
-                  strip.background = ggplot2::element_rect(fill = NA),
-                  strip.text = ggplot2::element_text(size = 12, face = "bold", color = "black"),
-                  legend.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
-                  legend.title = ggplot2::element_text(size = 10, face = "bold", color = "black"),
-                  legend.key.size = grid::unit(.2, "in"),
-                  legend.margin = ggplot2::margin(0, 0, 0, 0, "in"))
+          ggplot2::facet_wrap(~ trait, scales = "free") +
+          ggplot2::theme(axis.text.x = ggplot2::element_text(size=10, face = "bold", color="black"),
+                         axis.text.y = ggplot2::element_text(size=10, face = "bold", color="black"),
+                         axis.title.x = ggplot2::element_text(size=12, face = "bold", color="black"),
+                         axis.title.y = ggplot2::element_text(size=12, face = "bold", color="black"),
+                         plot.title = ggplot2::element_text(size=12, face = "bold", color = "black", hjust = .5),
+                         strip.background = ggplot2::element_rect(fill = NA),
+                         strip.text = ggplot2::element_text(size = 12, face = "bold", color = "black"),
+                         legend.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
+                         legend.title = ggplot2::element_text(size = 10, face = "bold", color = "black"),
+                         legend.key.size = grid::unit(.2, "in"),
+                         legend.margin = ggplot2::margin(0, 0, 0, 0, "in"))
 
             traitcor <- splitbydose[[i]] %>%
               dplyr::filter(trait %in% c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF", "mean.EXT", "q75.TOF",
@@ -134,7 +156,7 @@ for (i in 1:length(dosedrugs)) {
                     legend.title = ggplot2::element_text(size = 10, face = "bold", color = "black"))+
               ggplot2::labs(title=splitbydose[[i]]$condition[1], x=NULL, y=NULL)
             
-          print(plot_grid(doseplot, save_plot, nrow = 2, ncol = 1, labels = c("A", "B"), rel_heights = c(1, 2)))
+          print(cowplot::plot_grid(doseplot, save_plot, nrow = 2, ncol = 1, labels = c("A", "B"), rel_heights = c(1, 2)))
 
           cat("\n\n\n")
           cat("\n\n\\pagebreak\n")
@@ -160,15 +182,15 @@ panderOptions('knitr.auto.asis', TRUE)
 cat("\n\n\n")
 cat("\n\n\\pagebreak\n")
 
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS2_allRIAILregressed.RData")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS3_allAnnotatedLods.RData")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS9_allNILCSSregressed.RData")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS10_css_nil_stats.RData")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS5_varianceComponents.RData")
-data("N2xCB4856cross")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
+# data("N2xCB4856cross")
 
 #Make the cross object
-phenocross <- mergepheno(N2xCB4856cross, allRIAILregressed, set = 2)
+phenocross <- linkagemapping::mergepheno(N2xCB4856cross, allRIAILregressed, set = 2)
 
 #VE_SE_QTL
 VE <- varianceComponents %>%
@@ -186,7 +208,7 @@ VE_SE_QTL <- dplyr::left_join(VE, SE) %>%
 
 VE_SE_QTL$type <- factor(VE_SE_QTL$type, levels = c("Interactive", "Additive"))
 VE_SE_QTL <- VE_SE_QTL %>%
-  mutate(lower = VE - SE, higher = VE + SE)
+  dplyr::mutate(lower = VE - SE, higher = VE + SE)
 
 VE_SE_QTL$lower[VE_SE_QTL$type == "Interactive"] <- with(VE_SE_QTL,VE[type == "Additive"] - SE[type == "Interactive"] + VE[type == "Interactive"])
 VE_SE_QTL$higher[VE_SE_QTL$type == "Interactive"] <- with(VE_SE_QTL,VE[type == "Interactive"] + VE[type == "Additive"] + SE[type == "Interactive"])
@@ -232,69 +254,69 @@ quick_plot_V <- function(cond, pltrt, signif, ylab = pltrt){
   if(is.null(signif)) {
     phen_gen$strain <- factor(phen_gen$strain, levels = unique(phen_gen$strain), ordered = T)
     test <- phen_gen %>%
-      ggplot(.)+
-      aes(x = strain, y = phenotype,fill=strain)+
-      scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA230" = "gray", "ECA232" = "gray"))+
-      geom_jitter(alpha = 1, size = pointsize)+
-      geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
-      theme_bw()+
-      theme(axis.text.x = element_text(size=textsize, face="bold", color="black"),
-            axis.text.y = element_text(size=textsize,  face = "bold", color="black"),
-            axis.title.x = element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
-            axis.title.y = element_text(size=titlesize,  color="black", face = "bold"),
-            strip.text = element_text(size=titlesize,  color="black", face = "bold"),
-            legend.position="none",
-            plot.title = element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
-            panel.background = element_rect(color="black",size=1),
-            strip.background = element_rect(color = "black", size = 1)) + 
-      labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::ggplot(.)+
+      ggplot2::aes(x = strain, y = phenotype,fill=strain)+
+      ggplot2::scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA230" = "gray", "ECA232" = "gray"))+
+      ggplot2::geom_jitter(alpha = 1, size = pointsize)+
+      ggplot2::geom_boxplot(outlier.colour = NA, ggplot2::aes(alpha = 0.8))+
+      ggplot2::theme_bw()+
+      ggplot2::theme(axis.text.x = ggplot2::element_text(size=textsize, face="bold", color="black"),
+                     axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
+                     axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
+                     axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     legend.position="none",
+                     plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
+                     panel.background = ggplot2::element_rect(color="black",size=1),
+                     strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
+      ggplot2::labs(y= ylab, x = "", title = "NIL") 
   } else {
     phen_gen$strain <- factor(phen_gen$strain, levels = unique(phen_gen$strain), ordered = T)
     test <- phen_gen %>%
-      ggplot(.)+
-      aes(x = strain, y = phenotype,fill=strain)+
-      scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA230" = "gray", "ECA232" = "gray"))+
-      geom_jitter(alpha = 1, size = pointsize)+
-      geom_text(data = signif, aes(x = strain, y = pheno, label = significant), size = 3, color = "black", fontface = "bold") +
-      geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
-      theme_bw()+
-      theme(axis.text.x = element_text(size=textsize, face="bold", color="black"),
-            axis.text.y = element_text(size=textsize,  face = "bold", color="black"),
-            axis.title.x = element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
-            axis.title.y = element_text(size=titlesize,  color="black", face = "bold"),
-            strip.text = element_text(size=titlesize,  color="black", face = "bold"),
-            legend.position="none",
-            plot.title = element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
-            panel.background = element_rect(color="black",size=1),
-            strip.background = element_rect(color = "black", size = 1)) + 
+      ggplot2::ggplot(.)+
+      ggplot2::aes(x = strain, y = phenotype,fill=strain)+
+      ggplot2::scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA230" = "gray", "ECA232" = "gray"))+
+      ggplot2::geom_jitter(alpha = 1, size = pointsize)+
+      ggplot2::geom_text(data = signif, ggplot2::aes(x = strain, y = pheno, label = significant), size = 3, color = "black", fontface = "bold") +
+      ggplot2::geom_boxplot(outlier.colour = NA, ggplot2::aes(alpha = 0.8))+
+      ggplot2::theme_bw()+
+      ggplot2::theme(axis.text.x = ggplot2::element_text(size=textsize, face="bold", color="black"),
+                     axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
+                     axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
+                     axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     legend.position="none",
+                     plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
+                     panel.background = ggplot2::element_rect(color="black",size=1),
+                     strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
       #ggplot2::ylim(NA, max(phen_gen$phenotype)*1.7)+
-      labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = "NIL") 
   }
   
-  ggdraw() +
-    draw_plot(test, 0, .03, 1, .97) +
-    draw_label("Chr V", x = 0.01, y = .08, size = textsize, fontface = "bold", hjust = -.16)+
-    geom_rect(aes(xmin = x1+chr, xmax = x1+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x2+chr, xmax = x2+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x3+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x3+blck*.25+chr, xmax = x3+blck*.75-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x4+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x4+blck*.25+chr, xmax = x4+blck*.75-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+
-    draw_label("Genome", x = 0.01, y = .05, hjust = -.1, size = textsize, fontface = "bold") +
-    geom_rect(aes(xmin = x1, xmax = x1+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x2, xmax = x2+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x3, xmax = x3+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "orange")
+  cowplot::ggdraw() +
+    cowplot::draw_plot(test, 0, .03, 1, .97) +
+    cowplot::draw_label("Chr V", x = 0.01, y = .08, size = textsize, fontface = "bold", hjust = -.16)+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x1+chr, xmax = x1+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "orange")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x2+chr, xmax = x2+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3+blck*.25+chr, xmax = x3+blck*.75-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "orange")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "orange")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4+blck*.25+chr, xmax = x4+blck*.75-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+
+    cowplot::draw_label("Genome", x = 0.01, y = .05, hjust = -.1, size = textsize, fontface = "bold") +
+    ggplot2::geom_rect(ggplot2::aes(xmin = x1, xmax = x1+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "orange")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x2, xmax = x2+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "blue")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3, xmax = x3+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "blue")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "orange")
 }
 quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt){
   phen_gen <- allNILCSSregressed %>%
@@ -302,70 +324,75 @@ quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt){
   
   if(is.null(signif)) {
     test <- phen_gen %>%
-      ggplot(.)+
-      aes(x = factor(strain, levels = c("N2", "CB4856", "ECA241", "ECA240"), labels = c("N2", "CB4856", "ECA241", "ECA240"), ordered = T), y = phenotype,fill=strain)+
-      scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA241" = "gray", "ECA240" = "gray"))+
-      geom_jitter(alpha = 1, size = pointsize)+
-      geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
-      theme_bw()+
-      theme(axis.text.x = element_text(size=textsize, face="bold", color="black"),
-            axis.text.y = element_text(size=textsize,  face = "bold", color="black"),
-            axis.title.x = element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
-            axis.title.y = element_text(size=titlesize,  color="black", face = "bold"),
-            strip.text = element_text(size=titlesize,  color="black", face = "bold"),
-            legend.position="none",
-            plot.margin = margin(t = 0, r = 10, b = 30, l = 0),
-            plot.title = element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
-            panel.background = element_rect(color="black",size=1),
-            strip.background = element_rect(color = "black", size = 1)) + 
-      labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::ggplot(.)+
+      ggplot2::aes(x = factor(strain, levels = c("N2", "CB4856", "ECA241", "ECA240"), 
+                              labels = c("N2", "CB4856", "ECA241", "ECA240"), ordered = T),
+                   y = phenotype,fill=strain)+
+      ggplot2::scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA241" = "gray", "ECA240" = "gray"))+
+      ggplot2::geom_jitter(alpha = 1, size = pointsize)+
+      ggplot2::geom_boxplot(outlier.colour = NA, ggplot2::aes(alpha = 0.8))+
+      ggplot2::theme_bw()+
+      ggplot2::theme(axis.text.x = ggplot2::element_text(size=textsize, face="bold", color="black"),
+                     axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
+                     axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
+                     axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     legend.position="none",
+                     plot.margin = ggplot2::margin(t = 0, r = 10, b = 30, l = 0),
+                     plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
+                     panel.background = ggplot2::element_rect(color="black",size=1),
+                     strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
+      ggplot2::labs(y= ylab, x = "", title = "NIL") 
   } else{
     test <- phen_gen %>%
-      ggplot(.)+
-      aes(x = factor(strain, levels = c("N2", "CB4856", "ECA241", "ECA240"), labels = c("N2", "CB4856", "ECA241", "ECA240"), ordered = T), y = phenotype,fill=strain)+
-      scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA241" = "gray", "ECA240" = "gray"))+
-      geom_jitter(alpha = 1, size = pointsize)+
-      geom_text(data = signif, aes(x = strain, y = pheno, label = significant), size = 3, color = "black", fontface = "bold") +
-      geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
-      theme_bw()+
+      ggplot2::ggplot(.)+
+      ggplot2::aes(x = factor(strain, levels = c("N2", "CB4856", "ECA241", "ECA240"),
+                              labels = c("N2", "CB4856", "ECA241", "ECA240"), ordered = T),
+                   y = phenotype,fill=strain)+
+      ggplot2::scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA241" = "gray", "ECA240" = "gray"))+
+      ggplot2::geom_jitter(alpha = 1, size = pointsize)+
+      ggplot2::geom_text(data = signif, ggplot2::aes(x = strain, y = pheno, label = significant), 
+                         size = 3, color = "black", fontface = "bold") +
+      ggplot2::geom_boxplot(outlier.colour = NA, ggplot2::aes(alpha = 0.8))+
+      ggplot2::theme_bw()+
       # coord_flip() +
-      theme(axis.text.x = element_text(size=textsize, face="bold", color="black"),
-            axis.text.y = element_text(size=textsize,  face = "bold", color="black"),
-            axis.title.x = element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
-            axis.title.y = element_text(size=titlesize,  color="black", face = "bold"),
-            strip.text = element_text(size=titlesize,  color="black", face = "bold"),
-            legend.position="none",
-            panel.background = element_rect(color="black",size=1),
-            plot.title = element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
-            strip.background = element_rect(color = "black", size = 1)) + 
+      ggplot2::theme(axis.text.x = ggplot2::element_text(size=textsize, face="bold", color="black"),
+                     axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
+                     axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
+                     axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     legend.position="none",
+                     panel.background = ggplot2::element_rect(color="black",size=1),
+                     plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
+                     strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
       # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-      labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = "NIL") 
   }
   
-  ggdraw() +
-    draw_plot(test, 0, .03, 1, .97) +
-    draw_label("Chr IV", x = 0.01, y = .08, size = textsize, fontface = "bold", hjust = -.16)+
-    geom_rect(aes(xmin = x1+chr, xmax = x1+blck-chr, ymin = y1*3, ymax = y1*3 + width),
-              colour = "black", fill = "orange")+ #N2 chr
-    geom_rect(aes(xmin = x2+chr, xmax = x2+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+ #CB chr
-    geom_rect(aes(xmin = x3+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+ #First NIL chr
-    geom_rect(aes(xmin = x3+blck*.5+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "orange")+ #first NIL introgressed
-    geom_rect(aes(xmin = x4+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "orange")+ #Last NIL chr
-    geom_rect(aes(xmin = x4+blck*.5+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+ #Last NIL introgressed
-    draw_label("Genome", x = 0.01, y = .05, hjust = -.1, size = textsize, fontface = "bold") +
-    geom_rect(aes(xmin = x1, xmax = x1+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "orange")+ #N2 genome
-    geom_rect(aes(xmin = x2, xmax = x2+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "blue")+ #CB genome
-    geom_rect(aes(xmin = x3, xmax = x3+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "blue")+ #First NIL genome
-    geom_rect(aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "orange") #last NIL genome
+  cowplot::ggdraw() +
+    cowplot::draw_plot(test, 0, .03, 1, .97) +
+    cowplot::draw_label("Chr IV", x = 0.01, y = .08, size = textsize, fontface = "bold", hjust = -.16)+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x1+chr, xmax = x1+blck-chr, ymin = y1*3, ymax = y1*3 + width),
+                       colour = "black", fill = "orange")+ #N2 chr
+    ggplot2::geom_rect(ggplot2::aes(xmin = x2+chr, xmax = x2+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+ #CB chr
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+ #First NIL chr
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3+blck*.5+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "orange")+ #first NIL introgressed
+    ggplot2:: geom_rect(ggplot2::aes(xmin = x4+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                        colour = "black", fill = "orange")+ #Last NIL chr
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4+blck*.5+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+ #Last NIL introgressed
+    cowplot::draw_label("Genome", x = 0.01, y = .05, hjust = -.1, size = textsize, fontface = "bold") +
+    ggplot2::geom_rect(ggplot2::aes(xmin = x1, xmax = x1+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "orange")+ #N2 genome
+    ggplot2::geom_rect(ggplot2::aes(xmin = x2, xmax = x2+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "blue")+ #CB genome
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3, xmax = x3+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "blue")+ #First NIL genome
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "orange") #last NIL genome
 }
 quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt){
   phen_gen <- allNILCSSregressed %>%
@@ -374,64 +401,64 @@ quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt){
   if(is.null(signif)) {
     phen_gen$strain <- factor(phen_gen$strain, levels = unique(phen_gen$strain), ordered = T)
     test <- phen_gen %>%
-      ggplot(.)+
-      aes(x = strain, y = phenotype,fill=strain)+
-      scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA554" = "gray", "ECA573" = "gray"))+
-      geom_jitter(alpha = 1, size = pointsize)+
-      geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
-      theme_bw()+
-      theme(axis.text.x = element_text(size=textsize, face="bold", color="black"),
-            axis.text.y = element_text(size=textsize,  face = "bold", color="black"),
-            axis.title.x = element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
-            axis.title.y = element_text(size=titlesize,  color="black", face = "bold"),
-            strip.text = element_text(size=titlesize,  color="black", face = "bold"),
+      ggplot2::ggplot(.)+
+      ggplot2::aes(x = strain, y = phenotype,fill=strain)+
+      ggplot2::scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA554" = "gray", "ECA573" = "gray"))+
+      ggplot2::geom_jitter(alpha = 1, size = pointsize)+
+      ggplot2::geom_boxplot(outlier.colour = NA, ggplot2::aes(alpha = 0.8))+
+      ggplot2::theme_bw()+
+      ggplot2::theme(axis.text.x = ggplot2::element_text(size=textsize, face="bold", color="black"),
+            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
+            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
+            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+            strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
             legend.position="none",
-            plot.title = element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
-            panel.background = element_rect(color="black",size=1),
-            strip.background = element_rect(color = "black", size = 1)) + 
-      labs(y= ylab, x = "", title = "CSS") 
+            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
+            panel.background = ggplot2::element_rect(color="black",size=1),
+            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
+      ggplot2::labs(y= ylab, x = "", title = "CSS") 
   } else {
     phen_gen$strain <- factor(phen_gen$strain, levels = unique(phen_gen$strain), ordered = T)
     test <- phen_gen %>%
-      ggplot(.)+
-      aes(x = strain, y = phenotype, fill=strain)+
-      scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA554" = "gray", "ECA573" = "gray"))+
-      geom_jitter(alpha = 1, size = pointsize)+
-      geom_text(data = signif, aes(x = strain, y = pheno, label = significant), size = 3, color = "black", fontface = "bold") +
-      geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
-      theme_bw()+
-      theme(axis.text.x = element_text(size=textsize, face="bold", color="black"),
-            axis.text.y = element_text(size=textsize,  face = "bold", color="black"),
-            axis.title.x = element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
-            axis.title.y = element_text(size=titlesize,  color="black", face = "bold"),
-            strip.text = element_text(size=titlesize,  color="black", face = "bold"),
-            plot.title = element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
+      ggplot2::ggplot(.)+
+      ggplot2::aes(x = strain, y = phenotype, fill=strain)+
+      ggplot2::scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA554" = "gray", "ECA573" = "gray"))+
+      ggplot2::geom_jitter(alpha = 1, size = pointsize)+
+      ggplot2::geom_text(data = signif, ggplot2::aes(x = strain, y = pheno, label = significant), size = 3, color = "black", fontface = "bold") +
+      ggplot2::geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
+      ggplot2::theme_bw()+
+      ggplot2::theme(axis.text.x = ggplot2::element_text(size=textsize, face="bold", color="black"),
+            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
+            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
+            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+            strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
             legend.position="none",
-            panel.background = element_rect(color="black",size=1),
-            strip.background = element_rect(color = "black", size = 1)) + 
+            panel.background = ggplot2::element_rect(color="black",size=1),
+            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
       # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-      labs(y= ylab, x = "", title = "CSS") 
+      ggplot2::labs(y= ylab, x = "", title = "CSS") 
   }
   
-  ggdraw() +
-    draw_plot(test, 0, .03, 1, .97) +
-    draw_label("Chr V", x = 0.01, y = .08, size = textsize, fontface = "bold", hjust = -.16)+
-    geom_rect(aes(xmin = x1+chr, xmax = x1+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+  cowplot::ggdraw() +
+    cowplot::draw_plot(test, 0, .03, 1, .97) +
+    cowplot::draw_label("Chr V", x = 0.01, y = .08, size = textsize, fontface = "bold", hjust = -.16)+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x1+chr, xmax = x1+blck-chr, ymin = y1*3, ymax = y1*3 +width),
               colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x2+chr, xmax = x2+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+    ggplot2::geom_rect(ggplot2::aes(xmin = x2+chr, xmax = x2+blck-chr, ymin = y1*3, ymax = y1*3 +width),
               colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x3+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
               colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x4+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
               colour = "black", fill = "blue")+
-    draw_label("Genome", x = 0.01, y = .05, hjust = -.1, size = textsize, fontface = "bold") +
-    geom_rect(aes(xmin = x1, xmax = x1+blck, ymin = y2*3, ymax = y2*3 +width),
+    cowplot::draw_label("Genome", x = 0.01, y = .05, hjust = -.1, size = textsize, fontface = "bold") +
+    ggplot2::geom_rect(ggplot2::aes(xmin = x1, xmax = x1+blck, ymin = y2*3, ymax = y2*3 +width),
               colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x2, xmax = x2+blck, ymin = y2*3, ymax = y2*3 +width),
+    ggplot2::geom_rect(ggplot2::aes(xmin = x2, xmax = x2+blck, ymin = y2*3, ymax = y2*3 +width),
               colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x3, xmax = x3+blck, ymin = y2*3, ymax = y2*3 +width),
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3, xmax = x3+blck, ymin = y2*3, ymax = y2*3 +width),
               colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
               colour = "black", fill = "orange")
 }
 quick_plot_IVL <- function(cond, pltrt, signif, ylab = pltrt){
@@ -440,68 +467,72 @@ quick_plot_IVL <- function(cond, pltrt, signif, ylab = pltrt){
   
   if(is.null(signif)) {
     test <- phen_gen %>%
-      ggplot(.)+
-      aes(x = factor(strain, levels = c("N2", "CB4856", "ECA229", "ECA231"), labels = c("N2", "CB4856", "ECA229", "ECA231"), ordered = T), y = phenotype,fill=strain)+
-      scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA229" = "gray", "ECA231" = "gray"))+
-      geom_jitter(alpha = 1, size = pointsize)+
-      geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
-      theme_bw()+
-      theme(axis.text.x = element_text(size=textsize, face="bold", color="black"),
-            axis.text.y = element_text(size=textsize,  face = "bold", color="black"),
-            axis.title.x = element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
-            axis.title.y = element_text(size=titlesize,  color="black", face = "bold"),
-            strip.text = element_text(size=titlesize,  color="black", face = "bold"),
-            legend.position="none",
-            plot.title = element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
-            panel.background = element_rect(color="black",size=1),
-            strip.background = element_rect(color = "black", size = 1)) + 
-      labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::ggplot(.)+
+      ggplot2::aes(x = factor(strain, levels = c("N2", "CB4856", "ECA229", "ECA231"), 
+                              labels = c("N2", "CB4856", "ECA229", "ECA231"), ordered = T), 
+                   y = phenotype,fill=strain)+
+      ggplot2::scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA229" = "gray", "ECA231" = "gray"))+
+      ggplot2::geom_jitter(alpha = 1, size = pointsize)+
+      ggplot2::geom_boxplot(outlier.colour = NA, ggplot2::aes(alpha = 0.8))+
+      ggplot2::theme_bw()+
+      ggplot2::theme(axis.text.x = ggplot2::element_text(size=textsize, face="bold", color="black"),
+                     axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
+                     axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
+                     axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     legend.position="none",
+                     plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
+                     panel.background = ggplot2::element_rect(color="black",size=1),
+                     strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
+      ggplot2::labs(y= ylab, x = "", title = "NIL") 
   } else {
     test <- phen_gen %>%
-      ggplot(.)+
-      aes(x = factor(strain, levels = c("N2", "CB4856", "ECA229", "ECA231"), labels = c("N2", "CB4856", "ECA229", "ECA231"), ordered = T), y = phenotype,fill=strain)+
-      scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA229" = "gray", "ECA231" = "gray"))+
-      geom_jitter(alpha = 1, size = pointsize)+
-      geom_text(data = signif, aes(x = strain, y = pheno, label = significant), size = 3, color = "black", fontface = "bold") +
-      geom_boxplot(outlier.colour = NA, aes(alpha = 0.8))+
-      theme_bw()+
-      theme(axis.text.x = element_text(size=textsize, face="bold", color="black"),
-            axis.text.y = element_text(size=textsize,  face = "bold", color="black"),
-            axis.title.x = element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
-            axis.title.y = element_text(size=titlesize,  color="black", face = "bold"),
-            strip.text = element_text(size=titlesize,  color="black", face = "bold"),
-            legend.position="none",
-            plot.title = element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
-            panel.background = element_rect(color="black",size=1),
-            strip.background = element_rect(color = "black", size = 1)) + 
+      ggplot2::ggplot(.)+
+      ggplot2::aes(x = factor(strain, levels = c("N2", "CB4856", "ECA229", "ECA231"), 
+                              labels = c("N2", "CB4856", "ECA229", "ECA231"), ordered = T), 
+                   y = phenotype,fill=strain)+
+      ggplot2::scale_fill_manual(values = c("N2" = "orange", "CB4856"= "blue", "ECA229" = "gray", "ECA231" = "gray"))+
+      ggplot2::geom_jitter(alpha = 1, size = pointsize)+
+      ggplot2::geom_text(data = signif, ggplot2::aes(x = strain, y = pheno, label = significant), size = 3, color = "black", fontface = "bold") +
+      ggplot2::geom_boxplot(outlier.colour = NA, ggplot2::aes(alpha = 0.8))+
+      ggplot2::theme_bw()+
+      ggplot2::theme(axis.text.x = ggplot2::element_text(size=textsize, face="bold", color="black"),
+                     axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
+                     axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
+                     axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                     legend.position="none",
+                     plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
+                     panel.background = ggplot2::element_rect(color="black",size=1),
+                     strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
       # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-      labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = "NIL") 
   }
   
-  ggdraw() +
-    draw_plot(test, 0, .03, 1, .97) +
-    draw_label("Chr IV", x = 0.01, y = .08, size = textsize, fontface = "bold", hjust = -.16)+
-    geom_rect(aes(xmin = x1+chr, xmax = x1+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x2+chr, xmax = x2+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x3+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x3+blck*.25+chr, xmax = x3+blck*.75-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x4+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x4+blck*.25+chr, xmax = x4+blck*.75-chr, ymin = y1*3, ymax = y1*3 +width),
-              colour = "black", fill = "blue")+
-    draw_label("Genome", x = 0.01, y = .05, hjust = -.1, size = textsize, fontface = "bold") +
-    geom_rect(aes(xmin = x1, xmax = x1+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "orange")+
-    geom_rect(aes(xmin = x2, xmax = x2+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x3, xmax = x3+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "blue")+
-    geom_rect(aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
-              colour = "black", fill = "orange")
+  cowplot::ggdraw() +
+    cowplot::draw_plot(test, 0, .03, 1, .97) +
+    cowplot::draw_label("Chr IV", x = 0.01, y = .08, size = textsize, fontface = "bold", hjust = -.16)+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x1+chr, xmax = x1+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "orange")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x2+chr, xmax = x2+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3+chr, xmax = x3+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3+blck*.25+chr, xmax = x3+blck*.75-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "orange")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4+chr, xmax = x4+blck-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "orange")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4+blck*.25+chr, xmax = x4+blck*.75-chr, ymin = y1*3, ymax = y1*3 +width),
+                       colour = "black", fill = "blue")+
+    cowplot::draw_label("Genome", x = 0.01, y = .05, hjust = -.1, size = textsize, fontface = "bold") +
+    ggplot2::geom_rect(ggplot2::aes(xmin = x1, xmax = x1+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "orange")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x2, xmax = x2+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "blue")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x3, xmax = x3+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "blue")+
+    ggplot2::geom_rect(ggplot2::aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
+                       colour = "black", fill = "orange")
 }
 
 # More functions for plotting
@@ -537,7 +568,8 @@ maxlodplot_kt <- function (map) {
     ggplot2::facet_grid(. ~ chr, scales = "free", space = "free") +
     ggplot2::labs(x = "Genomic Position (Mb)", y = "LOD") +
     ggplot2::scale_colour_discrete(name = "Mapping\nIteration") +
-    ggplot2::ggtitle(map1$trait[1]) + ggplot2::theme_bw() +
+    ggplot2::ggtitle(map1$trait[1]) + 
+    ggplot2::theme_bw() +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(size = textsize, color = "black", face = "bold"),
       axis.text.y = ggplot2::element_text(size = textsize, color = "black", face = "bold"),
@@ -545,7 +577,7 @@ maxlodplot_kt <- function (map) {
       axis.title.y = ggplot2::element_text(size = titlesize,color="black", face = "bold"),
       strip.text.x = ggplot2::element_text(size = titlesize, color = "black"),
       strip.text.y = ggplot2::element_text(size = titlesize, color = "black"),
-      strip.background = element_rect(colour = "black", fill = "white", size = 0.75, linetype = "solid"),
+      strip.background = ggplot2::element_rect(colour = "black", fill = "white", size = 0.75, linetype = "solid"),
       plot.title = ggplot2::element_text(size = (titlesize+5),color="black", face = "bold"),
       panel.background = ggplot2::element_rect(color = "black", size = 1.2)) + 
     ggplot2::labs(title = tit)
@@ -601,26 +633,27 @@ pxgplot_kt <- function (cross, map, parent = "N2xCB4856", tit = "", ylab = "") {
                    strip.text.x = ggplot2::element_text(size = titlesize, face = "bold", color = "black"), 
                    legend.position = "none", 
                    strip.background = ggplot2::element_rect(fill = "white", colour = "white"),
-                   plot.margin = unit(c(-0.5, 0.2, 0.2, 0.2), "cm"),
+                   plot.margin = grid::unit(c(-0.5, 0.2, 0.2, 0.2), "cm"),
                    panel.background = ggplot2::element_rect(color = "black",size = 1.2)) + 
     ggplot2::labs(x = "", y = ylab, title = "")
-    
+  
   cowplot::ggdraw() +
-      cowplot::draw_plot(test, 0, .04, 1, .96)
+    cowplot::draw_plot(test, 0, .04, 1, .96)
 }
 plot_add_int <- function(df) {
   ggplot2::ggplot(df) +
-    ggplot2::geom_bar(data = df, ggplot2::aes(x = trait, 
-                              y = VE, fill = factor(type, levels = c("Interactive", "Additive"))), stat = "identity") +
+    ggplot2::geom_bar(data = df, ggplot2::aes(x = trait, y = VE, fill = factor(type, levels = c("Interactive", "Additive"))),
+                      stat = "identity") +
     ggplot2::scale_fill_manual("Key", values = c("slateblue2", "cadetblue3"))+
     ggplot2::labs(y = "Variance Explained", x = "") + 
-    ggplot2::geom_errorbar(ggplot2::aes(x = trait, ymin = lower, ymax = higher, group = n, linetype = type), width = 0.7, position = position_dodge(0.4)) +
+    ggplot2::geom_errorbar(ggplot2::aes(x = trait, ymin = lower, ymax = higher, group = n, linetype = type),
+                           width = 0.7, position = position_dodge(0.4)) +
     ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-          axis.text.y = ggplot2::element_text(size = textsize),
-          axis.ticks.x = ggplot2::element_blank(),
-          axis.title.x = ggplot2::element_text(size = titlesize, face = "bold"),
-          axis.title.y = ggplot2::element_text(size = titlesize, face = "bold"),
-          legend.position = "none")
+                   axis.text.y = ggplot2::element_text(size = textsize),
+                   axis.ticks.x = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_text(size = titlesize, face = "bold"),
+                   axis.title.y = ggplot2::element_text(size = titlesize, face = "bold"),
+                   legend.position = "none")
 }
 getpheno <- function(nil, exp, cond, trt) {
   regressed <- allNILCSSregressed %>%
@@ -1102,7 +1135,7 @@ for(drug in unique(splitmap$condition)) {
     #Mapping
     lod <- maxlodplot_kt(splitmap %>% dplyr::filter(condition == drug, trait == trt))
     VE <- plot_add_int(VE_SE_QTL %>% dplyr::filter(condition == drug, trait == trt))
-    print(plot_grid(lod, VE, nrow = 1, ncol = 2, rel_widths = c(5, 1), labels = c("A", "B")))
+    print(cowplot::plot_grid(lod, VE, nrow = 1, ncol = 2, rel_widths = c(5, 1), labels = c("A", "B")))
     
     #CSS and NILs if applicable
     count <- 0
@@ -1111,54 +1144,54 @@ for(drug in unique(splitmap$condition)) {
       rilnil_IVL <- NULL
       rilnil_IVR <- NULL
       rilnil_V <- NULL
-      css <- ggplot() + geom_blank()
-      nil <- ggplot() + geom_blank()
+      css <- ggplot2::ggplot() + ggplot2::geom_blank()
+      nil <- ggplot2::ggplot() + ggplot2::geom_blank()
       if(test$chr == "IV" && test$ci_l_pos <= 9334865 && test$ci_r_pos >= 3684741) {
-          if(count < 1) { ril <- plot_grid(pxgplot_kt(phenocross, test %>% 
+          if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                               dplyr::filter(chr == "IV", ci_l_pos <= 9334865, ci_r_pos >= 3684741) %>% 
                               dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
-        else { ril <- plot_grid(pxgplot_kt(phenocross, test %>% 
+        else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                               dplyr::filter(chr == "IV", ci_l_pos <= 9334865, ci_r_pos >= 3684741) %>% 
                               dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" ")) }
         if(drug %in% unique(chrIVLregressed$condition)) { #IVL hotspot
           nil <- quick_plot_IVL(drug, trt, plotstats(drug, trt, "IVL"))
         } 
-          rilnil_IVL <- plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
+          rilnil_IVL <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
       } else
       if(test$chr == "IV" && test$ci_l_pos <= 17493829 && test$ci_r_pos >= 12865211) {
-        if(count < 1) { ril <- plot_grid(pxgplot_kt(phenocross, test %>% 
+        if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                             dplyr::filter(chr == "IV", ci_l_pos <= 17493829, ci_r_pos >= 12865211) %>%
                             dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
-        else { ril <- plot_grid(pxgplot_kt(phenocross, test %>% 
+        else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                             dplyr::filter(chr == "IV", ci_l_pos <= 17493829, ci_r_pos >= 12865211) %>%
                             dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" ")) }
         if(drug %in% unique(chrIVRregressed$condition)) { #IVR hotspot
           nil <- quick_plot_IVR(drug, trt, plotstats(drug, trt, "IVR"))
         } 
-          rilnil_IVR <- plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
+          rilnil_IVR <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
       } else
       if(test$chr == "V" && test$ci_l_pos <= 13839858 && test$ci_r_pos >= 7082839) {
-        if(count < 1) { ril <- plot_grid(pxgplot_kt(phenocross, test %>% 
+        if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                             dplyr::filter(chr == "V", ci_l_pos <= 13839858, ci_r_pos >= 7082839) %>% 
                             dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
-        else { ril <- plot_grid(pxgplot_kt(phenocross, test %>% 
+        else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                             dplyr::filter(chr == "V", ci_l_pos <= 13839858, ci_r_pos >= 7082839) %>% 
                             dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" "))  }
         if(drug %in% unique(chrVregressed$condition)) { #V hotspot
             css <- quick_plot_cssV(drug, trt, plotstats(drug, trt, "CSSV"))
             nil <- quick_plot_V(drug, trt, plotstats(drug, trt, "V"))
         } 
-        rilnil_V <- plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
+        rilnil_V <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
       } else {
-          if(count < 1) { ril <- plot_grid(pxgplot_kt(phenocross, test %>% 
+          if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                               dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
-        else { ril <- plot_grid(pxgplot_kt(phenocross, test %>% 
+        else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                               dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" ")) }
       }
       
     #Print all the plots
     if(is.null(rilnil_IVL) && is.null(rilnil_IVR) && is.null(rilnil_V)) {
-      print(plot_grid(ril, NULL, NULL, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1)))
+      print(cowplot::plot_grid(ril, NULL, NULL, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1)))
     } else
     if(!is.null(rilnil_IVL)) {
       print(rilnil_IVL)
@@ -1192,20 +1225,20 @@ cat("\n\n\\pagebreak\n")
 library(tidyverse)
 library(linkagemapping)
 
-data("N2xCB4856cross")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS3_allAnnotatedLods.RData")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS2_allRIAILregressed.RData")
+# data("N2xCB4856cross")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.RData?raw=TRUE")
 
 allRIAILregressed <- allRIAILregressed %>%
     dplyr::mutate(condition = ifelse(condition == "chlorothanilil", "chlorothalonil",
                                      ifelse(condition == "deiquat", "diquat", condition)))
 
 #Make the cross object
-phenocross <- mergepheno(N2xCB4856cross, allRIAILregressed, set = 2)
+phenocross <- linkagemapping::mergepheno(N2xCB4856cross, allRIAILregressed, set = 2)
 
 splitmap <- allAnnotatedLods %>%
-  mutate(condition = stringr::str_split_fixed(trait, "\\.", 2)[,1]) %>%
-  mutate(trait = stringr::str_split_fixed(trait, "\\.", 2)[,2])
+  dplyr::mutate(condition = stringr::str_split_fixed(trait, "\\.", 2)[,1]) %>%
+  dplyr::mutate(trait = stringr::str_split_fixed(trait, "\\.", 2)[,2])
 
 #First find all correlation coefficients of overlapping traits
 corrs <- phenocross$pheno %>%
@@ -1213,16 +1246,16 @@ corrs <- phenocross$pheno %>%
   na.omit() %>%
   dplyr::mutate()
 
-corrs <- cor(corrs)
+corrs <- stats::cor(corrs)
 
 peaks <- splitmap %>%
   dplyr::filter(!grepl("red|yellow|green|iqr|f.", trait)) %>%
-  group_by(condition,chr) %>%
-  arrange(condition,chr,ci_l_pos,ci_r_pos) %>%
+  dplyr::group_by(condition,chr) %>%
+  dplyr::arrange(condition,chr,ci_l_pos,ci_r_pos) %>%
   dplyr::mutate(unique = 1) %>%
   na.omit() %>%
   dplyr::mutate(drugtrait = paste(condition, trait, sep = ".")) %>%
-  distinct(drugtrait,.keep_all = TRUE)
+  dplyr::distinct(drugtrait,.keep_all = TRUE)
 
 corrcoeff <- NA
 VE <- NA
@@ -1259,40 +1292,40 @@ VEoverlaps <- as.data.frame(VEoverlaps) %>%
 VEoverlaps$corrcoeff <- as.numeric(VEoverlaps$corrcoeff)
 VEoverlaps$VE <- as.numeric(VEoverlaps$VE)
 
-VE95th <- quantile(VEoverlaps$VE, .95)
+VE95th <- stats::quantile(VEoverlaps$VE, .95)
 
 overlapthresh <- VEoverlaps %>%
   dplyr::mutate(above = ifelse(VE > VE95th, "yes", "no"))
 
-overlapVEhist <- ggplot(data = overlapthresh) +
-  geom_histogram(aes(x = VE, fill = above), bins = 100) +
-  xlim(0.045,.25) +
-  scale_fill_manual(values = c("yes" = "blue", "no" = "grey"))+
-  theme_bw() +
-  theme(axis.text = element_text(size = 10, face = "bold", color = "black"),
-    axis.title = element_text(size = 12, face = "bold", color = "black"),
-    legend.position = "none",
-    plot.title = element_blank())+
-  labs(x = "Proportion variance explained", y = "Number of QTL pairs")
+overlapVEhist <- ggplot2::ggplot(data = overlapthresh) +
+  ggplot2::geom_histogram(ggplot2::aes(x = VE, fill = above), bins = 100) +
+  ggplot2::xlim(0.045,.25) +
+  ggplot2::scale_fill_manual(values = c("yes" = "blue", "no" = "grey"))+
+  ggplot2::theme_bw() +
+  ggplot2::theme(axis.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
+                 axis.title = ggplot2::element_text(size = 12, face = "bold", color = "black"),
+                 legend.position = "none",
+                 plot.title = ggplot2::element_blank())+
+  ggplot2::labs(x = "Proportion variance explained", y = "Number of QTL pairs")
 
 highestVE <- overlapthresh %>%
   dplyr::filter(above == "yes")
 highestVE$corrcoeff <- as.numeric(highestVE$corrcoeff)
 
-corcoeffthresh <- quantile(highestVE$corrcoeff, probs = .05)
+corcoeffthresh <- stats::quantile(highestVE$corrcoeff, probs = .05)
 
-highestVEhist <- ggplot(data = highestVE) +
-  geom_histogram(aes(x = corrcoeff), bins = 100, fill = "blue") +
-  xlim(0.3, 1) +
-  geom_vline(xintercept = corcoeffthresh, color = "red", lwd = 1) +
-  theme_bw() +
-  theme(
-    axis.text = element_text(size = 10, face = "bold", color = "black"),
-    axis.title = element_text(size = 12, face = "bold", color = "black"),
+highestVEhist <- ggplot2::ggplot(data = highestVE) +
+  ggplot2::geom_histogram(ggplot2::aes(x = corrcoeff), bins = 100, fill = "blue") +
+  ggplot2::xlim(0.3, 1) +
+  ggplot2::geom_vline(xintercept = corcoeffthresh, color = "red", lwd = 1) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text =ggplot2:: element_text(size = 10, face = "bold", color = "black"),
+    axis.title = ggplot2::element_text(size = 12, face = "bold", color = "black"),
     legend.position = "none",
-    plot.title = element_blank()
+    plot.title = ggplot2::element_blank()
   )+
-  labs(x = "Correlation coefficient", y = "Number of overlapping QTL pairs")
+  ggplot2::labs(x = "Correlation coefficient", y = "Number of overlapping QTL pairs")
 
 figureS3 <- cowplot::plot_grid(overlapVEhist, highestVEhist, align = "h", ncol = 2, labels = c("A","B"))
 
@@ -1310,8 +1343,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(cowplot)
 library(Hmisc)
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS7_uniqueQTL.RData")
-load("~/Dropbox/AndersenLab/QTLpaper/data/final/FileS5_varianceComponents.RData")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
 
 VE <- varianceComponents %>%
   dplyr::select(condition, trait, narrowsense_h2, interaction_VE) %>%
@@ -1348,37 +1381,42 @@ VE_SE_QTL <- VE_SE_QTL %>%
   dplyr::arrange(condition, trait) %>%
   dplyr::mutate(condition = capitalize(condition))
 
-allinteractions <- ggplot(VE_SE_QTL) +
-  geom_bar(data = VE_SE_QTL, aes(x = trait, 
+allinteractions <- ggplot2::ggplot(VE_SE_QTL) +
+  ggplot2::geom_bar(data = VE_SE_QTL,ggplot2:: aes(x = trait, 
                                  y = VE, fill = factor(type, levels = c("Interactive", "Additive"))), stat = "identity") +
-  scale_fill_manual("Key", values = c("slateblue2", "cadetblue3"))+
-  coord_flip() +
-  facet_grid(~condition, scales = "free_y", switch = "both") +
-  labs(y = "Variance Explained", x = "") + 
-  geom_errorbar(aes(x = trait, ymin = lower, ymax = higher, group = n, linetype = type), width = 0.7, position = position_dodge(0.4)) +
-  theme(legend.position = "none",
-        strip.background = element_rect(colour = "black", fill = "white", linetype = "solid", size = 1),
-        strip.text = element_text(size = titlesize, face = "bold"),
-        strip.text.x = element_text(margin = margin(4, 0, 4, 0)),
-        axis.text.x = element_text(size = textsize),
-        axis.text.y = element_text(size = textsize),
-        axis.title.x = element_blank()) +
-  facet_wrap(~condition, scales = "free", ncol = 3, nrow = 6)
+  ggplot2::scale_fill_manual("Key", values = c("slateblue2", "cadetblue3"))+
+  ggplot2::coord_flip() +
+  ggplot2::facet_grid(~condition, scales = "free_y", switch = "both") +
+  ggplot2::labs(y = "Variance Explained", x = "") + 
+  ggplot2::geom_errorbar(ggplot2::aes(x = trait, ymin = lower, ymax = higher, group = n, linetype = type), width = 0.7, position = position_dodge(0.4)) +
+  ggplot2::theme(legend.position = "none",
+        strip.background = ggplot2::element_rect(colour = "black", fill = "white", linetype = "solid", size = 1),
+        strip.text = ggplot2::element_text(size = titlesize, face = "bold"),
+        strip.text.x = ggplot2::element_text(margin = margin(4, 0, 4, 0)),
+        axis.text.x = ggplot2::element_text(size = textsize),
+        axis.text.y = ggplot2::element_text(size = textsize),
+        axis.title.x = ggplot2::element_blank()) +
+  ggplot2::facet_wrap(~condition, scales = "free", ncol = 3, nrow = 6)
 
 legstartx <- 0.5 #position where the top left corner of the legend begins
 legstarty <- 0.1 #position where the top left corner of the legend begins
 width <- 0.02 #width of the boxes/lines of legend
 sp <- 0.01 #spacing within legend
 
-plot <- ggdraw() +
-  draw_plot(allinteractions, 0, 0, 1, 1) +
-  geom_rect(aes(xmin = legstartx - sp, xmax = legstartx + width*12+sp*2, ymin = legstarty-width-sp, ymax = legstarty + sp), colour = "black", fill = "white") +
-  geom_rect(aes(xmin = legstartx, xmax = legstartx + width, ymax = legstarty, ymin = legstarty - width*0.8), colour = "black", fill = "cadetblue3") +
-  draw_label("Additive", x = legstartx + width*3 + sp, y = legstarty - width*0.35, size = titlesize, fontface = "bold") +
-  geom_segment(aes(x = legstartx - width*.25, xend = legstartx + width*1.35, y = legstarty - width*.35, yend = legstarty - width*.35), colour = "black", linetype = "solid")+ 
-  geom_rect(aes(xmin = legstartx+width*6, xmax = legstartx + width*7, ymax = legstarty, ymin = legstarty - width*0.8), colour = "black", fill = "slateblue2") +
-  draw_label("Interactive", x = legstartx + width*9.5 + sp, y = legstarty - width*0.35, size = titlesize, fontface = "bold") +
-  geom_segment(aes(x = legstartx+width*5.75, xend = legstartx + width*7.5, y = legstarty - width*.35, yend = legstarty - width*.35), colour = "black", linetype = "dashed") 
+plot <- cowplot::ggdraw() +
+  cowplot::draw_plot(allinteractions, 0, 0, 1, 1) +
+  ggplot2::geom_rect(ggplot2::aes(xmin = legstartx - sp, xmax = legstartx + width*12+sp*2, 
+                                  ymin = legstarty-width-sp, ymax = legstarty + sp), colour = "black", fill = "white") +
+  ggplot2::geom_rect(ggplot2::aes(xmin = legstartx, xmax = legstartx + width, ymax = legstarty, ymin = legstarty - width*0.8), 
+                     colour = "black", fill = "cadetblue3") +
+  cowplot::draw_label("Additive", x = legstartx + width*3 + sp, y = legstarty - width*0.35, size = titlesize, fontface = "bold") +
+  ggplot2::geom_segment(ggplot2::aes(x = legstartx - width*.25, xend = legstartx + width*1.35, 
+                                     y = legstarty - width*.35, yend = legstarty - width*.35), colour = "black", linetype = "solid")+ 
+  ggplot2::geom_rect(ggplot2::aes(xmin = legstartx+width*6, xmax = legstartx + width*7, ymax = legstarty, 
+                                  ymin = legstarty - width*0.8), colour = "black", fill = "slateblue2") +
+  cowplot::draw_label("Interactive", x = legstartx + width*9.5 + sp, y = legstarty - width*0.35, size = titlesize, fontface = "bold") +
+  ggplot2::geom_segment(ggplot2::aes(x = legstartx+width*5.75, xend = legstartx + width*7.5, 
+                                     y = legstarty - width*.35, yend = legstarty - width*.35), colour = "black", linetype = "dashed") 
 
 print(plot)
 
@@ -1386,7 +1424,86 @@ print(plot)
 
 **Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each trait that represents one of the 114 distinct QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
 
-```{r}
-# Add sup figure S5 that was generated not using code via pdf merge #
+```{r s5,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=4}
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_correlated_traits.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
+
+peaks <- allAnnotatedLods %>%
+    na.omit()
+
+assays_category <- assays_category %>%
+    dplyr::mutate(chr = ifelse(exp %in% c("IVL", "IVR"), "IV", ifelse(exp %in% c("CSSV", "V"), "V", NA)),
+                  drugtrait = paste0(chr, ".", condition, ".", trait))
+
+correlated_traits <- correlated_traits %>%
+    dplyr::mutate(drugtrait = paste0(chr, ".", condition, ".", trait))
+
+# How many traits represent only themselves (usually do not overlap with other traits or overlap but are not correleated)
+# NOTE: a few cases of traits in this category that do overlap and are correlated with another trait but as an artifact of how 
+# we group the traits (based on lod scores) to avoid grouping all traits that overlap by the transitive property (A with B and B with C
+# doesn't mean A with C).
+self_represent <- correlated_traits %>%
+    dplyr::mutate(drugtrait = paste0(chr, ".", condition, ".", trait)) %>%
+    dplyr::group_by(representative_trait) %>%
+    dplyr::mutate(num_traits = n()) %>%
+    dplyr::filter(num_traits == 1)
+#length(unique(self_represent$representative_trait))
+
+# How many traits represent at least one other trait
+group_represent <- correlated_traits %>%
+    dplyr::mutate(drugtrait = paste0(chr, ".", condition, ".", trait)) %>%
+    dplyr::group_by(representative_trait) %>%
+    dplyr::mutate(num_traits = n()) %>%
+    dplyr::filter(num_traits > 1)
+#length(unique(group_represent$representative_trait))
+
+
+# how many correlated groups did we test with nIL assay?
+nilassay <- correlated_traits %>%
+    dplyr::left_join(assays_category) %>%
+    dplyr::filter(exp != "CSSV") %>%
+    dplyr::mutate(drugtrait = paste0(chr, ".", condition, ".", trait)) %>%
+    dplyr::group_by(representative_trait) %>%
+    dplyr::mutate(num_traits = n()) %>%
+    dplyr::filter(num_traits > 1) %>%
+    tidyr::drop_na(exp)
+#length(unique(nilassay$representative_trait))
+
+# Of the correlated grouped traits, how many of them are in the same category?
+cortrtcat <- correlated_traits %>%
+    dplyr::left_join(assays_category) %>%
+    dplyr::select(chr, condition, trait, representative_trait, trait_correlation, exp, primary_category) %>%
+    dplyr::filter(!is.na(primary_category), exp != "CSSV") %>%
+    # dplyr::filter(primary_category != "parents_not_significant") %>%
+    dplyr::group_by(representative_trait, exp) %>%
+    dplyr::mutate(num_traits = n()) %>%
+    dplyr::filter(num_traits > 1) %>%
+    dplyr::group_by(representative_trait, primary_category, exp) %>%
+    dplyr::mutate(num_cat = n()) %>%
+    dplyr::mutate(perc_cat = num_cat / num_traits *100) %>%
+    dplyr::arrange(representative_trait, exp) %>%
+    # dplyr::arrange(perc_cat) %>%
+    dplyr::distinct(representative_trait, exp, primary_category, .keep_all = T)
+cortrtcat$representative_trait <- factor(cortrtcat$representative_trait, levels = unique(cortrtcat$representative_trait))
+cortrtcat$primary_category <- factor(cortrtcat$primary_category, levels = c("parents_not_significant", "miscellaneous", "bidirectional_transgressive", "unidirectional_transgressive", "no_qtl_effect", "recapitulation"), labels = c("Parents Not Significant", "Miscellaneous", "Bidirectional Transgressive",
+                                                                            "Unidirectional Transgressive", "No Qtl Effect", "Recapitulation"))
+
+# stacked barplot
+corgroupplot <- ggplot2::ggplot(data = cortrtcat, ggplot2::aes(x = representative_trait, y = perc_cat)) +
+  ggplot2::geom_bar(aes(fill = primary_category), stat = "identity") +
+  ggplot2::scale_fill_manual(values = c(Recapitulation = "forestgreen", `No Qtl Effect` = "darkred", `Unidirectional Transgressive` = "steelblue1",
+                                        `Bidirectional Transgressive` = "steelblue4", `Miscellaneous` = "grey75", `Parents Not Significant` = "grey51"),
+                             name = "Category", limits = c("Recapitulation", "No Qtl Effect", "Unidirectional Transgressive", "Bidirectional Transgressive",
+                                                           "Miscellaneous", "Parents Not Significant"))+
+  ggplot2::geom_text(ggplot2::aes(label = num_traits, y = 95), color = "white") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1, vjust = 0.5), 
+                 axis.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
+                 axis.title = ggplot2::element_text(size = 12, face = "bold", color = "black")) +
+  ggplot2::labs(y = "Percent of traits", x = "Representative Trait")
+print(corgroupplot)
+
 ```
 
+**Figure S5** Categorization of correlated traits. The x-axis shows the representative trait (the trait with the highest LOD score) of a cluster of correlated traits with overlapping QTL confidence intervals. Each color represents the NIL assay categorization for each trait within a correlation cluster - either recapitulation (green), no QTL effect (red), unidirectional transgressive phenotype (light blue), bidirectional transgressive phenotype (dark blue), miscellaneous (light grey) or no significant parental difference (dark grey). The percent of all traits within the correlation cluster that falls within a given category is shown on the y-axis. Numbers above each bar indicate the number of traits within a correlation cluster.
