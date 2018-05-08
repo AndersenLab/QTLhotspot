@@ -1424,7 +1424,15 @@ print(plot)
 
 **Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each trait that represents one of the 114 distinct QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
 
-```{r s5,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=4}
+\newpage
+
+![ ](~/Dropbox/AndersenLab/QTLpaper/figures/final/figS5_categorization.pdf)
+
+
+**Figure S5** NIL and CSS trait categorizations. (**A**) Flowchart for categorizing traits from the NIL or CSS phenotyping assays. (**B**) Six categories across both CSS and NIL assays for traits on chromosome V. The miscellaneous category is not depicted, but encompasses any other combination of NIL and CSS assay results.
+
+
+```{r s6,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=4}
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_correlated_traits.RData?raw=TRUE")
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.RData?raw=TRUE")
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
@@ -1506,4 +1514,4 @@ print(corgroupplot)
 
 ```
 
-**Figure S5** Categorization of correlated traits. The x-axis shows the representative trait (the trait with the highest LOD score) of a cluster of correlated traits with overlapping QTL confidence intervals. Each color represents the NIL assay categorization for each trait within a correlation cluster - either recapitulation (green), no QTL effect (red), unidirectional transgressive phenotype (light blue), bidirectional transgressive phenotype (dark blue), miscellaneous (light grey) or no significant parental difference (dark grey). The percent of all traits within the correlation cluster that falls within a given category is shown on the y-axis. Numbers above each bar indicate the number of traits within a correlation cluster.
+**Figure S6** Categorization of correlated traits. The x-axis shows the representative trait (the trait with the highest LOD score) of a cluster of correlated traits with overlapping QTL confidence intervals. Each color represents the NIL assay categorization for each trait within a correlation cluster - either recapitulation (green), no QTL effect (red), unidirectional transgressive phenotype (light blue), bidirectional transgressive phenotype (dark blue), miscellaneous (light grey) or no significant parental difference (dark grey). The percent of all traits within the correlation cluster that falls within a given category is shown on the y-axis. Numbers above each bar indicate the number of traits within a correlation cluster.
