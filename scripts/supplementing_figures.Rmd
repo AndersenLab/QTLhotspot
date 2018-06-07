@@ -102,10 +102,10 @@ splitbydose <- split(traitcordrugs, paste(traitcordrugs$condition))
 for (i in 1:length(dosedrugs)) {
         
         traitdf <- dosedata %>%
-            dplyr::filter(trait %in% c("norm.n", "q75.TOF","q25.TOF"), grepl(dosedrugs[i], condition)|grepl(dosecontrols[i],condition), plate == doseplates[i]) %>%
+            dplyr::filter(trait %in% c("norm.n", "mean.TOF","mean.norm.EXT"), grepl(dosedrugs[i], condition)|grepl(dosecontrols[i],condition), plate == doseplates[i]) %>%
             dplyr::group_by(strain)
         
-        traitdf$trait <- factor(traitdf$trait, levels = c("norm.n","q25.TOF","q75.TOF"), labels = c("Norm.n", "q25.TOF", "q75.TOF"))
+        traitdf$trait <- factor(traitdf$trait, levels = c("norm.n","mean.TOF","mean.norm.EXT"), labels = c("Brood Size", "Mean Length", "Mean Optical Density"))
         
         doseplot <- ggplot2::ggplot(traitdf) +
           ggplot2::theme_bw()+
@@ -164,7 +164,7 @@ for (i in 1:length(dosedrugs)) {
 }
 ```
 
-**Figure S1** Dose-response and trait correlation estimates. (**A**) Phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters (norm.n, q25.TOF, q75.TOF) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait. (**B**) Correlation coefficients (r^2^) between all pairwise combinations of traits for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes and colors represent correlation coefficients increasing from green to yellow to pink to white.
+**Figure S1** Dose-response and trait correlation estimates. (**A**) Phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters- brood size (norm.n), mean animal length (mean.TOF), and mean optical density (mean.norm.EXT) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait. (**B**) Correlation coefficients (r^2^) between all pairwise combinations of traits for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes and colors represent correlation coefficients increasing from green to yellow to pink to white.
 
 
 ```{r s2,warning=F, message=F, echo=F,comment="K",results='asis'}
