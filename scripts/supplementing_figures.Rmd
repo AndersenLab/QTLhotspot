@@ -105,7 +105,7 @@ for (i in 1:length(dosedrugs)) {
             dplyr::filter(trait %in% c("norm.n", "q75.TOF","q25.TOF"), grepl(dosedrugs[i], condition)|grepl(dosecontrols[i],condition), plate == doseplates[i]) %>%
             dplyr::group_by(strain)
         
-        traitdf$trait <- factor(traitdf$trait, levels = c("norm.n","q25.TOF","q75.TOF"), labels = c("Brood Size", "Small Size", "Large Size"))
+        traitdf$trait <- factor(traitdf$trait, levels = c("norm.n","q25.TOF","q75.TOF"), labels = c("Norm.n", "q25.TOF", "q75.TOF"))
         
         doseplot <- ggplot2::ggplot(traitdf) +
           ggplot2::theme_bw()+
@@ -115,7 +115,7 @@ for (i in 1:length(dosedrugs)) {
           ggplot2::scale_x_discrete(limits=levels(concentrations[[i]]), labels = doselabels[[i]])+
           ggplot2::scale_fill_manual(values=c("blue","green","pink","orange"), guide_legend(title = "Strain"))+
           ggplot2::ggtitle(Hmisc::capitalize(dosedrugs[i])) +
-          ggplot2::labs(x = "Concentration (µM)", y = "Residual phenotype") +
+          ggplot2::labs(x = "Concentration (µM)", y = "Raw Phenotype") +
           ggplot2::facet_wrap(~ trait, scales = "free") +
           ggplot2::theme(axis.text.x = ggplot2::element_text(size=10, face = "bold", color="black"),
                          axis.text.y = ggplot2::element_text(size=10, face = "bold", color="black"),
@@ -131,11 +131,11 @@ for (i in 1:length(dosedrugs)) {
 
             traitcor <- splitbydose[[i]] %>%
               dplyr::filter(trait %in% c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF", "mean.EXT", "q75.TOF",
-                                         "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "q10.norm.EXT", "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT",
+                                         "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT", "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT",
                                          "q75.norm.EXT", "q90.norm.EXT"))
   
             traitcor$trait <- factor(traitcor$trait, levels = c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF",
-                                                                "mean.EXT", "q75.TOF", "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "q10.norm.EXT",
+                                                                "mean.EXT", "q75.TOF", "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT",
                                                                 "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT", "q75.norm.EXT", "q90.norm.EXT"))
   
   
@@ -164,7 +164,7 @@ for (i in 1:length(dosedrugs)) {
 }
 ```
 
-**Figure S1** Dose-response and trait correlation estimates. (**A**) Phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters (q25.TOF, q75.TOF, and norm.n) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait. (**B**) Correlation coefficients (r^2^) between all pairwise combinations of traits for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes and colors represent correlation coefficients increasing from green to yellow to pink to white.
+**Figure S1** Dose-response and trait correlation estimates. (**A**) Phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters (norm.n, q25.TOF, q75.TOF) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait. (**B**) Correlation coefficients (r^2^) between all pairwise combinations of traits for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes and colors represent correlation coefficients increasing from green to yellow to pink to white.
 
 
 ```{r s2,warning=F, message=F, echo=F,comment="K",results='asis'}

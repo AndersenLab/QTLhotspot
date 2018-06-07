@@ -352,7 +352,8 @@ QTLperbin <- function(mappos, uniqueQTL, numcm = 30, pval = .01, bonferroni = "F
     
 }
 
-QTLperbin(mappos, uniqueQTL, numcm = 20, pval = 0.05, bonferroni = "TRUE")
+# QTLperbin(mappos, uniqueQTL, numcm = 20, pval = 0.05, bonferroni = "TRUE")
+QTLperbin(mappos, uniqueQTL, numcm = 21, pval = 0.05, bonferroni = "TRUE")
 summary[[1]]
 
 
