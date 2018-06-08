@@ -1225,14 +1225,6 @@ cat("\n\n\\pagebreak\n")
 library(tidyverse)
 library(linkagemapping)
 
-# data("N2xCB4856cross")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.RData?raw=TRUE")
-
-allRIAILregressed <- allRIAILregressed %>%
-    dplyr::mutate(condition = ifelse(condition == "chlorothanilil", "chlorothalonil",
-                                     ifelse(condition == "deiquat", "diquat", condition)))
-
 #Make the cross object
 phenocross <- linkagemapping::mergepheno(N2xCB4856cross, allRIAILregressed, set = 2)
 
@@ -1334,7 +1326,7 @@ print(figureS3)
 
 ```
 
-**Figure S3** Determining a threshold for identifying distinct QTL. (**A**) Within each condition, pairs of traits with overlapping QTL confidence intervals are plotted as a histogram. The phenotypic variation explained by the lowest effect-size QTL per pair of overlapping confidence intervals is shown on the x-axis. Pairs of QTL with a variance explained estimate above the 95^th^ percentile of this distribution are colored in blue. (**B**) A histogram of all pairs of traits with overlapping confidence intervals containing a QTL with a variance explained estimate above the cutoff from (A). The correlation coefficient of each of pair of traits, calculated from the dose-response data, is shown on the x-axis. The 5^th^ percentile of this distribution is indicated by the red line at a correlation coefficient of 0.642.
+**Figure S3** Determining a threshold for identifying distinct QTL. (**A**) Within each condition, pairs of traits with overlapping QTL confidence intervals are plotted as a histogram. The phenotypic variation explained by the lowest effect-size QTL per pair of overlapping confidence intervals is shown on the x-axis. Pairs of QTL with a variance explained estimate above the 95^th^ percentile of this distribution are colored in blue. (**B**) A histogram of all pairs of traits with overlapping confidence intervals containing a QTL with a variance explained estimate above the cutoff from (A). The correlation coefficient of each of pair of traits, calculated from the dose-response data, is shown on the x-axis. The 5^th^ percentile of this distribution is indicated by the red line at a correlation coefficient of `r corcoeffthresh[[1]]`.
 
 
 ```{r s4,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=8.85}
@@ -1379,7 +1371,7 @@ VE_SE_QTL <- VE_SE_QTL %>%
   dplyr::mutate(condtrt = paste0(condition, ".", trait)) %>%
   dplyr::filter(condtrt %in% unique(uniqueQTL$drugtrait)) %>%
   dplyr::arrange(condition, trait) %>%
-  dplyr::mutate(condition = capitalize(condition))
+  dplyr::mutate(condition = Hmisc::capitalize(condition))
 
 allinteractions <- ggplot2::ggplot(VE_SE_QTL) +
   ggplot2::geom_bar(data = VE_SE_QTL,ggplot2:: aes(x = trait, 
@@ -1422,7 +1414,7 @@ print(plot)
 
 ```
 
-**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each trait that represents one of the 114 distinct QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
+**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each trait that represents one of the 143 distinct QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
 
 
 ```{r s5, echo=FALSE, out.width='100%'}

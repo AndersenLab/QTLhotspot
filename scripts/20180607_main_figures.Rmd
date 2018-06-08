@@ -115,7 +115,7 @@ grid::grid.draw(gt)
 
 ```
 
-**Figure 1** Diverse genetic architectures are implicated in responses to 16 toxins. Linkage mapping results for traits that represent 130 distinct QTL across 16 toxins, comprising chemotherapeutics (teal), heavy metals (orange), pesticides (purple), and neuropharmaceuticals (pink) are plotted. Genomic position (Mb) is shown along the x-axis, split by chromosome, and each trait that represents a distinct QTL is plotted along the y-axis. Each QTL is plotted as a point at the location of the most significant genetic marker and a line indicating the 95% confidence interval. QTL are colored by the logarithm of the odds (LOD) score, increasing in significance from blue to green to yellow.
+**Figure 1** Diverse genetic architectures are implicated in responses to 16 toxins. Linkage mapping results for traits that represent 143 distinct QTL across 16 toxins, comprising chemotherapeutics (teal), heavy metals (orange), pesticides (purple), and neuropharmaceuticals (pink) are plotted. Genomic position (Mb) is shown along the x-axis, split by chromosome, and each trait that represents a distinct QTL is plotted along the y-axis. Each QTL is plotted as a point at the location of the most significant genetic marker and a line indicating the 95% confidence interval. QTL are colored by the logarithm of the odds (LOD) score, increasing in significance from blue to green to yellow.
 
 \newpage
 
@@ -237,7 +237,7 @@ fig2
 
 ```
 
-**Figure 2** Additive genetic components identified by linkage mapping do not explain all heritable contributions to toxin-response variation. For traits representing the 130 distinct QTL, we compared (**A**) the broad-sense heritability (x-axis) calculated from the dose-response data versus the narrow-sense heritability (y-axis) estimated by linkage mapping and (**B**) the narrow-sense heritability (x-axis) versus the variance explained (VE) by all QTL detected by linkage mapping (y-axis). In both plots, each trait is plotted as a point whose color indicates drug class (chemotherapeutic, heavy metal, neuropharmaceutical, or pesticide). The diagonal line represents y = x and is shown as a visual guide.
+**Figure 2** Additive genetic components identified by linkage mapping do not explain all heritable contributions to toxin-response variation. For traits representing the 143 distinct QTL, we compared (**A**) the broad-sense heritability (x-axis) calculated from the dose-response data versus the narrow-sense heritability (y-axis) estimated by linkage mapping and (**B**) the narrow-sense heritability (x-axis) versus the variance explained (VE) by all QTL detected by linkage mapping (y-axis). In both plots, each trait is plotted as a point whose color indicates drug class (chemotherapeutic, heavy metal, neuropharmaceutical, or pesticide). The diagonal line represents y = x and is shown as a visual guide.
 
 \newpage
 
@@ -359,7 +359,7 @@ summary[[1]]
 
 ```
 
-**Figure 3** Three QTL hotspots impact condition responses. Each chromosome is divided into bins of 26 cM, resulting in a total of 65 bins across the genome. The x-axis shows the genomic position (Mb), and the y-axis shows the number of the 130 distinct QTL that lie within the corresponding bin. The red line indicates the 95th percentile of a Poisson distribution with a mean of 2 QTL (total QTL/total bins). 
+**Figure 3** Three QTL hotspots impact condition responses. Each chromosome is divided into bins of 26 cM, resulting in a total of 65 bins across the genome. The x-axis shows the genomic position (Mb), and the y-axis shows the number of the 143 distinct QTL that lie within the corresponding bin. The red line indicates the 95th percentile of a Poisson distribution with a mean of 2 QTL (total QTL/total bins). 
 
 \newpage
 
