@@ -99,6 +99,13 @@ splitbydose <- split(traitcordrugs, paste(traitcordrugs$condition))
 
 ```{r s1_3, fig.width=7.5, fig.height=10,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
 
+  reorder_cormat <- function(cormat){
+  # Use correlation between variables as distance
+  dd <- as.dist((1-cormat)/2)
+  hc <- hclust(dd)
+  cormat <-cormat[hc$order, hc$order]
+}
+
 for (i in 1:length(dosedrugs)) {
         
         traitdf <- dosedata %>%
@@ -133,18 +140,20 @@ for (i in 1:length(dosedrugs)) {
               dplyr::filter(trait %in% c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF", "mean.EXT", "q75.TOF",
                                          "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT", "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT",
                                          "q75.norm.EXT", "q90.norm.EXT"))
-  
-            traitcor$trait <- factor(traitcor$trait, levels = c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF",
-                                                                "mean.EXT", "q75.TOF", "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT",
-                                                                "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT", "q75.norm.EXT", "q90.norm.EXT"))
+  #ordered traits based on correlation structure for each toxin:
+            # traitcor$trait <- factor(traitcor$trait, levels = c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF",
+            #                                                     "mean.EXT", "q75.TOF", "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT",
+            #                                                     "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT", "q75.norm.EXT", "q90.norm.EXT"))
   
   
             traitcor<- traitcor %>%
               tidyr::spread(trait, phenotype) %>%
               dplyr::ungroup() %>%
-              dplyr::select(n:q90.norm.EXT)
+              dplyr::select(cv.EXT:var.TOF)
+            traitcormat <- cor(traitcor)
+            reordered <- reorder_cormat(traitcormat)
             
-            save_plot <- ggplot2::ggplot(data=melt(cor(traitcor)), ggplot2::aes(Var1,Var2, fill=value^2))+
+            save_plot <- ggplot2::ggplot(data=melt(reordered), ggplot2::aes(Var1,Var2, fill=value^2))+
               ggplot2::geom_tile() +
               ggplot2::scale_fill_gradientn(colours=terrain.colors(6), name=expression(bold(italic("r")^2)))+
               ggplot2::theme_bw() +
@@ -164,7 +173,7 @@ for (i in 1:length(dosedrugs)) {
 }
 ```
 
-**Figure S1** Dose-response and trait correlation estimates. (**A**) Phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters- brood size (norm.n), mean animal length (mean.TOF), and mean optical density (mean.norm.EXT) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait. (**B**) Correlation coefficients (r^2^) between all pairwise combinations of traits for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes and colors represent correlation coefficients increasing from green to yellow to pink to white.
+**Figure S1** Dose-response and trait correlation estimates. (**A**) Phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters- brood size (norm.n), mean animal length (mean.TOF), and mean optical density (mean.norm.EXT) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait. (**B**) Correlation coefficients (r^2^) between all pairwise combinations of traits for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes, organized by heirarchical clustering of the correlation matrix for each toxin. Colors represent correlation coefficients increasing from green to yellow to pink to white.
 
 
 ```{r s2,warning=F, message=F, echo=F,comment="K",results='asis'}
@@ -1213,7 +1222,7 @@ for(drug in unique(splitmap$condition)) {
 
 ```
 
-**Figure S2** QTL linkage mapping, CSS and NIL results, and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. (**D** and **E**) For traits in which CSSs and NILs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed CSSs (**D**) or NILs (**E**) are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue).
+**Figure S2** QTL linkage mapping, CSS and NIL results, and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. For traits in which CSSs and NILs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue).
 
 
 ```{r s3,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=6, fig.height=4}
@@ -1326,7 +1335,7 @@ print(figureS3)
 
 ```
 
-**Figure S3** Determining a threshold for identifying distinct QTL. (**A**) Within each condition, pairs of traits with overlapping QTL confidence intervals are plotted as a histogram. The phenotypic variation explained by the lowest effect-size QTL per pair of overlapping confidence intervals is shown on the x-axis. Pairs of QTL with a variance explained estimate above the 95^th^ percentile of this distribution are colored in blue. (**B**) A histogram of all pairs of traits with overlapping confidence intervals containing a QTL with a variance explained estimate above the cutoff from (A). The correlation coefficient of each of pair of traits, calculated from the dose-response data, is shown on the x-axis. The 5^th^ percentile of this distribution is indicated by the red line at a correlation coefficient of `r corcoeffthresh[[1]]`.
+**Figure S3** Determining a threshold for identifying distinct QTL. (**A**) Within each condition, pairs of traits with overlapping QTL confidence intervals are plotted as a histogram. The phenotypic variation explained by the lowest effect-size QTL per pair of overlapping confidence intervals is shown on the x-axis. Pairs of QTL with a variance explained estimate above the 95^th^ percentile of this distribution are colored in blue. (**B**) A histogram of all pairs of traits with overlapping confidence intervals containing a QTL with a variance explained estimate above the cutoff from (A). The correlation coefficient of each of pair of traits, calculated from the dose-response data, is shown on the x-axis. The 5^th^ percentile of this distribution is indicated by the red line at a correlation coefficient of `r round(corcoeffthresh[[1]], 2)`.
 
 
 ```{r s4,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=8.85}
@@ -1414,19 +1423,20 @@ print(plot)
 
 ```
 
-**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each trait that represents one of the 143 distinct QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
+**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each of the 120 traits that represent one of the 143 distinct QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
 
 
 ```{r s5, echo=FALSE, out.width='100%'}
-figS5_path <- "https://cdn.rawgit.com/AndersenLab/QTLhotspot/03395f7d/figures/extra/figS5_categorization2.pdf"
-download.file(figS5_path, destfile = "~/Downloads/figS5.png")
+figS5_path <- "https://cdn.rawgit.com/AndersenLab/QTLhotspot/ed981acd/figures/extra/figS5_categorization2.pdf"
+download.file(figS5_path, destfile = "~/Downloads/figS5.pdf")
 knitr::include_graphics("~/Downloads/figS5.pdf")
+
 ```
 
 **Figure S5** NIL and CSS trait categorizations. (**A**) Flowchart for categorizing traits from the NIL or CSS phenotyping assays. (**B**) Six categories across both CSS and NIL assays for traits on chromosome V. The miscellaneous category is not depicted, but encompasses any other combination of NIL and CSS assay results.
 
 
-```{r s6,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=4}
+```{r s6,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=5}
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_correlated_traits.RData?raw=TRUE")
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.RData?raw=TRUE")
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
