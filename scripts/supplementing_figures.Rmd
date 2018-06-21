@@ -190,12 +190,14 @@ panderOptions('knitr.auto.asis', TRUE)
 
 cat("\n\n\n")
 cat("\n\n\\pagebreak\n")
-
+# 
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.RData?raw=TRUE")
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.RData?raw=TRUE")
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.RData?raw=TRUE")
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.RData?raw=TRUE")
+# 
 # data("N2xCB4856cross")
 
 #Make the cross object
@@ -256,7 +258,7 @@ titlesize = 10
 pointsize = 0.3
 
 #Define function for NIL mapping
-quick_plot_V <- function(cond, pltrt, signif, ylab = pltrt){
+quick_plot_V <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
   phen_gen <- allNILCSSregressed %>%
     dplyr::filter(experiment == "V", trait == pltrt, condition == cond)
   
@@ -278,7 +280,7 @@ quick_plot_V <- function(cond, pltrt, signif, ylab = pltrt){
                      plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                      panel.background = ggplot2::element_rect(color="black",size=1),
                      strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
-      ggplot2::labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = t) 
   } else {
     phen_gen$strain <- factor(phen_gen$strain, levels = unique(phen_gen$strain), ordered = T)
     test <- phen_gen %>%
@@ -299,7 +301,7 @@ quick_plot_V <- function(cond, pltrt, signif, ylab = pltrt){
                      panel.background = ggplot2::element_rect(color="black",size=1),
                      strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
       #ggplot2::ylim(NA, max(phen_gen$phenotype)*1.7)+
-      ggplot2::labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = t) 
   }
   
   cowplot::ggdraw() +
@@ -327,7 +329,7 @@ quick_plot_V <- function(cond, pltrt, signif, ylab = pltrt){
     ggplot2::geom_rect(ggplot2::aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
                        colour = "black", fill = "orange")
 }
-quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt){
+quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
   phen_gen <- allNILCSSregressed %>%
     dplyr::filter(experiment == "IVR", trait == pltrt, condition == cond)
   
@@ -351,7 +353,7 @@ quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt){
                      plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                      panel.background = ggplot2::element_rect(color="black",size=1),
                      strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
-      ggplot2::labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = t) 
   } else{
     test <- phen_gen %>%
       ggplot2::ggplot(.)+
@@ -375,7 +377,7 @@ quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt){
                      plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                      strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
       # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-      ggplot2::labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = t) 
   }
   
   cowplot::ggdraw() +
@@ -403,7 +405,7 @@ quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt){
     ggplot2::geom_rect(ggplot2::aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
                        colour = "black", fill = "orange") #last NIL genome
 }
-quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt){
+quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt, t = "CSS"){
   phen_gen <- allNILCSSregressed %>%
     dplyr::filter(experiment == "CSSV", trait == pltrt, condition == cond)
   
@@ -425,7 +427,7 @@ quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt){
             plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
             panel.background = ggplot2::element_rect(color="black",size=1),
             strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
-      ggplot2::labs(y= ylab, x = "", title = "CSS") 
+      ggplot2::labs(y= ylab, x = "", title = t) 
   } else {
     phen_gen$strain <- factor(phen_gen$strain, levels = unique(phen_gen$strain), ordered = T)
     test <- phen_gen %>%
@@ -446,7 +448,7 @@ quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt){
             panel.background = ggplot2::element_rect(color="black",size=1),
             strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
       # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-      ggplot2::labs(y= ylab, x = "", title = "CSS") 
+      ggplot2::labs(y= ylab, x = "", title = t) 
   }
   
   cowplot::ggdraw() +
@@ -470,7 +472,7 @@ quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt){
     ggplot2::geom_rect(ggplot2::aes(xmin = x4, xmax = x4+blck, ymin = y2*3, ymax = y2*3 +width),
               colour = "black", fill = "orange")
 }
-quick_plot_IVL <- function(cond, pltrt, signif, ylab = pltrt){
+quick_plot_IVL <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
   phen_gen <- allNILCSSregressed %>%
     dplyr::filter(experiment == "IVL", trait == pltrt, condition == cond)
   
@@ -493,7 +495,7 @@ quick_plot_IVL <- function(cond, pltrt, signif, ylab = pltrt){
                      plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                      panel.background = ggplot2::element_rect(color="black",size=1),
                      strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
-      ggplot2::labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = t) 
   } else {
     test <- phen_gen %>%
       ggplot2::ggplot(.)+
@@ -515,7 +517,7 @@ quick_plot_IVL <- function(cond, pltrt, signif, ylab = pltrt){
                      panel.background = ggplot2::element_rect(color="black",size=1),
                      strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
       # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-      ggplot2::labs(y= ylab, x = "", title = "NIL") 
+      ggplot2::labs(y= ylab, x = "", title = t) 
   }
   
   cowplot::ggdraw() +
@@ -1130,6 +1132,15 @@ splitmap <- allAnnotatedLods %>%
 
 ```{r s2_2,fig.width=7.5, fig.height=3,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
 
+# abbreviate category names for plotting
+plotcat <- assays_category %>%
+    dplyr::mutate(primary_category = ifelse(primary_category == "recapitulation", "Recapitulation",
+                                            ifelse(primary_category == "no_qtl_effect", "No effect",
+                                                   ifelse(primary_category == "unidirectional_transgressive", "Unidirectional",
+                                                          ifelse(primary_category == "bidirectional_transgressive", "Bidirectional",
+                                                                 ifelse(primary_category == "miscellaneous", "Miscellaneous",
+                                                                        ifelse(primary_category == "parents_not_significant", "No parental diff.", NA)))))))
+
 for(drug in unique(splitmap$condition)) {
  drugmap <- splitmap %>%
     dplyr::filter(condition == drug) %>%
@@ -1148,13 +1159,15 @@ for(drug in unique(splitmap$condition)) {
     
     #CSS and NILs if applicable
     count <- 0
+    blankplot <-  ggplot2::ggplot() + theme_bw() + theme(rect = element_blank())
     for(i in 1:nrow(traitmap)) {
       test <- traitmap[i,]
       rilnil_IVL <- NULL
       rilnil_IVR <- NULL
       rilnil_V <- NULL
-      css <- ggplot2::ggplot() + ggplot2::geom_blank()
-      nil <- ggplot2::ggplot() + ggplot2::geom_blank()
+      css <- ggplot2::ggplot() + ggplot2::geom_blank() + theme(rect = element_blank())
+      nil <- ggplot2::ggplot() + ggplot2::geom_blank() + theme(rect = element_blank())
+      # make ril and NIL (maybe) if in IVL hotspot
       if(test$chr == "IV" && test$ci_l_pos <= 9334865 && test$ci_r_pos >= 3684741) {
           if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                               dplyr::filter(chr == "IV", ci_l_pos <= 9334865, ci_r_pos >= 3684741) %>% 
@@ -1163,10 +1176,15 @@ for(drug in unique(splitmap$condition)) {
                               dplyr::filter(chr == "IV", ci_l_pos <= 9334865, ci_r_pos >= 3684741) %>% 
                               dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" ")) }
         if(drug %in% unique(chrIVLregressed$condition)) { #IVL hotspot
-          nil <- quick_plot_IVL(drug, trt, plotstats(drug, trt, "IVL"))
+            # get category of nil/css trait to add to figure title
+            nil_cat <- plotcat %>%
+                dplyr::filter(condition == drug, trait == trt, exp == "IVL") %>%
+                dplyr::pull(primary_category)
+          nil <- quick_plot_IVL(drug, trt, plotstats(drug, trt, "IVL"), t = paste("NIL -", nil_cat))
         } 
           rilnil_IVL <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
-      } else
+      } else      
+        # make ril and NIL (maybe) if in IVR hotspot
       if(test$chr == "IV" && test$ci_l_pos <= 17493829 && test$ci_r_pos >= 12865211) {
         if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                             dplyr::filter(chr == "IV", ci_l_pos <= 17493829, ci_r_pos >= 12865211) %>%
@@ -1175,10 +1193,15 @@ for(drug in unique(splitmap$condition)) {
                             dplyr::filter(chr == "IV", ci_l_pos <= 17493829, ci_r_pos >= 12865211) %>%
                             dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" ")) }
         if(drug %in% unique(chrIVRregressed$condition)) { #IVR hotspot
-          nil <- quick_plot_IVR(drug, trt, plotstats(drug, trt, "IVR"))
+            # get category of nil/css trait to add to figure title
+            nil_cat <- plotcat %>%
+                dplyr::filter(condition == drug, trait == trt, exp == "IVR") %>%
+                dplyr::pull(primary_category)
+          nil <- quick_plot_IVR(drug, trt, plotstats(drug, trt, "IVR"), t = paste("NIL -", nil_cat))
         } 
           rilnil_IVR <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
       } else
+              # make ril and NIL (maybe) if in V hotspot
       if(test$chr == "V" && test$ci_l_pos <= 13839858 && test$ci_r_pos >= 7082839) {
         if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                             dplyr::filter(chr == "V", ci_l_pos <= 13839858, ci_r_pos >= 7082839) %>% 
@@ -1187,11 +1210,19 @@ for(drug in unique(splitmap$condition)) {
                             dplyr::filter(chr == "V", ci_l_pos <= 13839858, ci_r_pos >= 7082839) %>% 
                             dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" "))  }
         if(drug %in% unique(chrVregressed$condition)) { #V hotspot
-            css <- quick_plot_cssV(drug, trt, plotstats(drug, trt, "CSSV"))
-            nil <- quick_plot_V(drug, trt, plotstats(drug, trt, "V"))
+            # get category of nil/css trait to add to figure title
+            css_cat <- plotcat %>%
+                dplyr::filter(condition == drug, trait == trt, exp == "CSSV") %>%
+                dplyr::pull(primary_category)
+            nil_cat <- plotcat %>%
+                dplyr::filter(condition == drug, trait == trt, exp == "V") %>%
+                dplyr::pull(primary_category)
+            css <- quick_plot_cssV(drug, trt, plotstats(drug, trt, "CSSV"), t = paste("CSS -", css_cat))
+            nil <- quick_plot_V(drug, trt, plotstats(drug, trt, "V"), t = paste("NIL - ", nil_cat))
         } 
         rilnil_V <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
       } else {
+          # make RIL plot if not in a hotspot
           if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
                               dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
         else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
@@ -1200,7 +1231,7 @@ for(drug in unique(splitmap$condition)) {
       
     #Print all the plots
     if(is.null(rilnil_IVL) && is.null(rilnil_IVR) && is.null(rilnil_V)) {
-      print(cowplot::plot_grid(ril, NULL, NULL, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1)))
+      print(cowplot::plot_grid(ril, blankplot, blankplot, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1)))
     } else
     if(!is.null(rilnil_IVL)) {
       print(rilnil_IVL)
@@ -1222,7 +1253,7 @@ for(drug in unique(splitmap$condition)) {
 
 ```
 
-**Figure S2** QTL linkage mapping, CSS and NIL results, and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. For traits in which CSSs and NILs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue).
+**Figure S2** QTL linkage mapping, CSS and NIL results, and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. For traits in which CSSs and NILs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). The category assigned to each assay is marked above each NIL/CSS phenotype plot.
 
 
 ```{r s3,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=6, fig.height=4}
