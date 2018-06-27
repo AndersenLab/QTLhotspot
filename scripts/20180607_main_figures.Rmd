@@ -15,7 +15,7 @@ library(grid)
 library(repmis)
 
 ######## Figure 1: Unique QTL plot ########
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.Rda?raw=TRUE")
 
 
 textsize = 10
@@ -122,10 +122,10 @@ grid::grid.draw(gt)
 ```{r fig2, fig.width=7.5, fig.height=3,warning=F, message=F, echo=F,comment="K",results='hide', dpi = 300}
 
 ######## Figure 2: VE v. H2 and H2 v. h2 ########
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.Rda?raw=TRUE")
 
 # define drug classes
 drugclasses <- data.frame(drug = c("carmustine", "chlorothalonil", "FUdR", "irinotecan", "mechlorethamine", "topotecan",
@@ -237,7 +237,7 @@ fig2
 
 ```
 
-**Figure 2** Additive genetic components identified by linkage mapping do not explain all heritable contributions to toxin-response variation. For traits representing the 143 distinct QTL, we compared (**A**) the broad-sense heritability (x-axis) calculated from the dose-response data versus the narrow-sense heritability (y-axis) estimated by linkage mapping and (**B**) the narrow-sense heritability (x-axis) versus the variance explained (VE) by all QTL detected by linkage mapping (y-axis). In both plots, each trait is plotted as a point whose color indicates drug class (chemotherapeutic, heavy metal, neuropharmaceutical, or pesticide). The diagonal line represents y = x and is shown as a visual guide.
+**Figure 2** Additive genetic components identified by linkage mapping do not explain all heritable contributions to toxin-response variation. For traits representing the 143 distinct QTL, we compared (**A**) the broad-sense heritability (x-axis) calculated from the dose-response data versus the narrow-sense heritability (y-axis) estimated by linkage mapping and (**B**) the narrow-sense heritability (x-axis) versus the variance explained by all QTL detected by linkage mapping (y-axis). In both plots, each trait is plotted as a point whose color indicates drug class (chemotherapeutic, heavy metal, neuropharmaceutical, or pesticide). The diagonal line represents y = x and is shown as a visual guide.
 
 \newpage
 
@@ -256,7 +256,7 @@ mappos <- merge(map, RIAILmarkerconversion, by= "id")
 colnames(mappos)[3:4] <- c("cM", "pos")
 
 #load in dataframe of unique QTL (annotated_lod df for each trait you are using for the plot, distinct will be called later in case of multiple peaks per QTL)
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.Rda?raw=TRUE")
 
 QTLperbin <- function(mappos, uniqueQTL, numcm = 30, pval = .01, bonferroni = "FALSE") {
     
@@ -359,17 +359,17 @@ summary[[1]]
 
 ```
 
-**Figure 3** Three QTL hotspots impact condition responses. Each chromosome is divided into bins of 26 cM, resulting in a total of 65 bins across the genome. The x-axis shows the genomic position (Mb), and the y-axis shows the number of the 143 distinct QTL that lie within the corresponding bin. The red line indicates the 95th percentile of a Poisson distribution with a mean of 2 QTL (total QTL/total bins). 
+**Figure 3** Three QTL hotspots impact condition responses. Each chromosome is divided into bins of 26 cM, resulting in a total of 65 bins across the genome. The x-axis shows the genomic position (Mb), and the y-axis shows the number of the 143 distinct QTL that lie within the corresponding bin. The red line indicates the 95th percentile of a Poisson distribution with a mean of 2.2 QTL (total QTL/total bins). 
 
 \newpage
 
 ```{r fig4, fig.width=7.5, fig.height=10,warning=F, message=F, echo=F,comment="K",results='hide', dpi = 300}
 
 ####### Figure 4: NIL and CSS overview figure #####
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
 
 #VE_SE_QTL
 VE <- varianceComponents %>%
@@ -1073,7 +1073,7 @@ all
 
 ```
 
-**Figure 4** Results from chromosome-substitution strain (CSS) and near-isogenic line (NIL) assays are categorized based on potential variance components implicated in toxin responses. A trait representing each of five categories of variance components (**A**) Recapitulation (cisplatin norm.n), (**B**) No QTL effect (carmustine n) (**C**) Interchromosomal external bidirectional loci (silver median.TOF), (**D**) Interchromosomal internal unidirectional loci (chlorothalonil q25.TOF), and (**E**) Intra-chromosomal unidirectional lci (cisplatin q90.EXT)] is reported. In each case, we show results from (i) the CSS assay (left) and NIL assay (right) plotted as Tukey box plots. The y-axis indicates residual phenotypic values for the given trait. Different letters (A-D) above each Tukey box plot represent significant differences (p < 0.05) while the same letter represents non-significant differences between two strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). (ii) A stacked bar plot shows the the proportion of phenotypic variation attributable to additive (light blue with dashed error bars) and interactive (dark blue with solid error bars) genetic factors, based on a mixed model.
+**Figure 4** Results from near-isogenic line (NIL) and chromosome-substitution strain (CSS) assays are categorized based on potential variance components implicated in toxin responses. A trait representing each of five categories of variance components (**A**) Recapitulation (cisplatin norm.n), (**B**) No QTL effect (carmustine n) (**C**) Interchromosomal external bidirectional loci (silver median.TOF), (**D**) Interchromosomal internal unidirectional loci (chlorothalonil q25.TOF), and (**E**) Intra-chromosomal unidirectional lci (cisplatin q90.EXT)] is reported. In each case, we show results from (i) the CSS assay (left) and NIL assay (right) plotted as Tukey box plots. The y-axis indicates residual phenotypic values for the given trait. Different letters (A-D) above each Tukey box plot represent significant differences (p < 0.05) while the same letter represents non-significant differences between two strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). (ii) A stacked bar plot shows the the proportion of phenotypic variation attributable to additive (light blue with dashed error bars) and interactive (dark blue with solid error bars) genetic factors, based on a mixed model.
 
 
 \newpage
