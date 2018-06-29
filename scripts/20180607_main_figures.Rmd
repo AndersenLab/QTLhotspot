@@ -26,10 +26,9 @@ threetrait <- uniqueQTL %>%
     dplyr::group_by(condition, chr) %>%
     dplyr::arrange(condition, chr, ci_l_pos, ci_r_pos) %>%
     na.omit() %>%
-    dplyr::distinct(chr, trait, condition, .keep_all = T) %>%
-    dplyr::mutate(class = NA, marker = NA) %>%
+    dplyr::distinct(marker, trait, condition, .keep_all = T) %>%
+    dplyr::mutate(class = NA) %>%
     dplyr::select(chr, pos, condition, trait, lod, ci_l_pos, ci_r_pos, class)
-    # select(-unique, -chrdrugtrait, -drugtrait)
 
 #Add drug class
 for(i in 1:nrow(threetrait)) {
@@ -109,13 +108,15 @@ gt <- gtable::gtable_add_grob(gt, pesticides,
 neuro = grid::rectGrob(gp = gpar(col = "#E7298A", lwd = 5, fill = NA))
 gt <- gtable::gtable_add_grob(gt, neuro,
                               t = 37, l = 15, b = 37, r = 17)
+png("~/Dropbox/AndersenLab/QTLpaper/writing/20180628_submission/figures/Figure1.png", height = 7.5, width = 7.5, units = "in", res = 300)
 grid::grid.newpage()
 grid::grid.draw(gt)
+dev.off()
 
 
 ```
 
-**Figure 1** Diverse genetic architectures are implicated in responses to 16 toxins. Linkage mapping results for traits that represent 143 distinct QTL across 16 toxins, comprising chemotherapeutics (teal), heavy metals (orange), pesticides (purple), and neuropharmaceuticals (pink) are plotted. Genomic position (Mb) is shown along the x-axis, split by chromosome, and each trait that represents a distinct QTL is plotted along the y-axis. Each QTL is plotted as a point at the location of the most significant genetic marker and a line indicating the 95% confidence interval. QTL are colored by the logarithm of the odds (LOD) score, increasing in significance from blue to green to yellow.
+**Figure 1** Diverse genetic architectures are implicated in responses to 16 toxins. Linkage mapping results for traits that represent 144 distinct QTL across 16 toxins, comprising chemotherapeutics (teal), heavy metals (orange), pesticides (purple), and neuropharmaceuticals (pink) are plotted. Genomic position (Mb) is shown along the x-axis, split by chromosome, and each trait that represents a distinct QTL is plotted along the y-axis. Each QTL is plotted as a point at the location of the most significant genetic marker and a line indicating the 95% confidence interval. QTL are colored by the logarithm of the odds (LOD) score, increasing in significance from blue to green to yellow.
 
 \newpage
 
@@ -233,11 +234,12 @@ narrow_broad <- ggplot2::ggplot(H2vsh2) +
 
 fig2 <- cowplot::plot_grid(narrow_broad, narrow_VE, labels = c("A", "B"), nrow = 1, ncol =2, rel_widths = c(1, 1.4))
 fig2
+# ggsave(fig2, file = "~/Dropbox/AndersenLab/QTLpaper/writing/20180628_submission/figures/Figure2.png", height = 3, width = 7.5)
 
 
 ```
 
-**Figure 2** Additive genetic components identified by linkage mapping do not explain all heritable contributions to toxin-response variation. For traits representing the 143 distinct QTL, we compared (**A**) the broad-sense heritability (x-axis) calculated from the dose-response data versus the narrow-sense heritability (y-axis) estimated by linkage mapping and (**B**) the narrow-sense heritability (x-axis) versus the variance explained by all QTL detected by linkage mapping (y-axis). In both plots, each trait is plotted as a point whose color indicates drug class (chemotherapeutic, heavy metal, neuropharmaceutical, or pesticide). The diagonal line represents y = x and is shown as a visual guide.
+**Figure 2** Additive genetic components identified by linkage mapping do not explain all heritable contributions to toxin-response variation. For 120 traits representing the 144 distinct QTL, we compared (**A**) the broad-sense heritability (x-axis) calculated from the dose-response data versus the narrow-sense heritability (y-axis) estimated by linkage mapping and (**B**) the narrow-sense heritability (x-axis) versus the variance explained by all QTL detected by linkage mapping (y-axis). In both plots, each trait is plotted as a point whose color indicates drug class (chemotherapeutic, heavy metal, neuropharmaceutical, or pesticide). The diagonal line represents y = x and is shown as a visual guide.
 
 \newpage
 
@@ -312,7 +314,7 @@ QTLperbin <- function(mappos, uniqueQTL, numcm = 30, pval = .01, bonferroni = "F
     
     mappedwithbin <- mappedwithbin %>%
         dplyr::ungroup() %>%
-        dplyr::group_by(chr, trait) %>%
+        dplyr::group_by(marker, trait) %>%
         dplyr::distinct(.keep_all = TRUE)
     
     # count number of peaks in each bin
@@ -355,11 +357,12 @@ QTLperbin <- function(mappos, uniqueQTL, numcm = 30, pval = .01, bonferroni = "F
 
 QTLperbin(mappos, uniqueQTL, numcm = 26, pval = 0.05, bonferroni = "TRUE")
 summary[[1]]
+# ggsave(plot, file = "~/Dropbox/AndersenLab/QTLpaper/writing/20180628_submission/figures/Figure3.png", height = 2.5, width = 7.5)
 
 
 ```
 
-**Figure 3** Three QTL hotspots impact condition responses. Each chromosome is divided into bins of 26 cM, resulting in a total of 65 bins across the genome. The x-axis shows the genomic position (Mb), and the y-axis shows the number of the 143 distinct QTL that lie within the corresponding bin. The red line indicates the 95th percentile of a Poisson distribution with a mean of 2.2 QTL (total QTL/total bins). 
+**Figure 3** Three QTL hotspots impact condition responses. Each chromosome is divided into bins of 26 cM, resulting in a total of 65 bins across the genome. The x-axis shows the genomic position (Mb), and the y-axis shows the number of the 144 distinct QTL that lie within the corresponding bin. The red line indicates the 95th percentile of a Poisson distribution with a mean of 2.2 QTL (total QTL/total bins). 
 
 \newpage
 
@@ -1070,6 +1073,7 @@ for(i in 1:nrow(categories)) {
 
 all <- cowplot::plot_grid(plotlist = plot_list, nrow = 5, ncol = 1, labels = c("A", "B", "C", "D", "E"))
 all
+# ggsave(all, height = 10, width = 7.5, file = "~/Dropbox/AndersenLab/QTLpaper/writing/20180628_submission/figures/Figure4.png")
 
 ```
 

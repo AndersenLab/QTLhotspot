@@ -8,15 +8,15 @@ mainfont: Times New Roman
 #load all datasets
 
 library(repmis)
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_correlated_traits.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.RData?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.RData?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_correlated_traits.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.Rda?raw=TRUE")
 library(linkagemapping)
 data("N2xCB4856cross")
 
@@ -39,7 +39,7 @@ cat("\n\n\n")
 cat("\n\n\\pagebreak\n")
     
 #Load Data
-#source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.RData?raw=TRUE")
+#source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.Rda?raw=TRUE")
 
 #### Dose response
 dosedrugs <- c("cadmium", "carmustine", "chlorothalonil", "chlorpyrifos", "cisplatin", "copper", "diquat", "fluoxetine", "FUdR", "irinotecan", "mechlorethamine", "paraquat", "silver", "topotecan", "tunicamycin", "vincristine")
@@ -173,7 +173,7 @@ for (i in 1:length(dosedrugs)) {
 }
 ```
 
-**Figure S1** Dose-response and trait correlation estimates. (**A**) Phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters- brood size (norm.n), mean animal length (mean.TOF), and mean optical density (mean.norm.EXT) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait. (**B**) Correlation coefficients (r^2^) between all pairwise combinations of traits for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes, organized by heirarchical clustering of the correlation matrix for each toxin. Colors represent correlation coefficients increasing from green to yellow to pink to white.
+**Figure S1** Dose-response and trait correlation estimates. (**A**) Raw phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters- brood size (norm.n), mean animal length (mean.TOF), and mean optical density (mean.norm.EXT) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait. (**B**) Correlation coefficients (r^2^) between all pairwise combinations of traits for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes, organized by heirarchical clustering of the correlation matrix for each toxin. Colors represent correlation coefficients increasing from green to yellow to pink to white.
 
 
 ```{r s2,warning=F, message=F, echo=F,comment="K",results='asis'}
@@ -191,12 +191,12 @@ panderOptions('knitr.auto.asis', TRUE)
 cat("\n\n\n")
 cat("\n\n\\pagebreak\n")
 # 
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS2_allRIAILregressed.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.Rda?raw=TRUE")
 # 
 # data("N2xCB4856cross")
 
@@ -1125,7 +1125,8 @@ plotstats <- function(drug, trt, expr) {
 splitmap <- allAnnotatedLods %>%
   dplyr::mutate(condition = stringr::str_split_fixed(trait, "\\.", 2)[,1]) %>%
   dplyr::mutate(trait = stringr::str_split_fixed(trait, "\\.", 2)[,2]) %>%
-  dplyr::filter(!grepl("red|yellow|green|f.|iqr", trait))
+  dplyr::filter(!grepl("red|yellow|green|f.|iqr", trait)) %>%
+  dplyr::arrange(condition, trait)
 
 
 ```
@@ -1253,7 +1254,7 @@ for(drug in unique(splitmap$condition)) {
 
 ```
 
-**Figure S2** QTL linkage mapping, CSS and NIL results, and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. For traits in which CSSs and NILs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). The category assigned to each assay is marked above each NIL/CSS phenotype plot.
+**Figure S2** QTL linkage mapping, NIL and CSS results, and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. For traits in which NILs and CSSs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (TukeyHSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). The category assigned to each assay is marked above each NIL/CSS phenotype plot.
 
 
 ```{r s3,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=6, fig.height=4}
@@ -1268,65 +1269,58 @@ library(linkagemapping)
 #Make the cross object
 phenocross <- linkagemapping::mergepheno(N2xCB4856cross, allRIAILregressed, set = 2)
 
+#Split trait into condition and trait
 splitmap <- allAnnotatedLods %>%
-  dplyr::mutate(condition = stringr::str_split_fixed(trait, "\\.", 2)[,1]) %>%
-  dplyr::mutate(trait = stringr::str_split_fixed(trait, "\\.", 2)[,2])
+    dplyr::mutate(condition = stringr::str_split_fixed(trait, "\\.", 2)[,1],
+                  trait = stringr::str_split_fixed(trait, "\\.", 2)[,2])
 
-#First find all correlation coefficients of overlapping traits
+#First find all correlation coefficients
 corrs <- phenocross$pheno %>%
-  dplyr::select(-strain, -set) %>%
-  na.omit() %>%
-  dplyr::mutate()
+    dplyr::select(-strain, -set) %>%
+    na.omit()
 
-corrs <- stats::cor(corrs)
+#Find correlations
+corrs <- cor(corrs)
 
+#Filter traits we are interested in and prepare for finding overlap - keep all QTL (not traits)
 peaks <- splitmap %>%
-  dplyr::filter(!grepl("red|yellow|green|iqr|f.", trait)) %>%
-  dplyr::group_by(condition,chr) %>%
-  dplyr::arrange(condition,chr,ci_l_pos,ci_r_pos) %>%
-  dplyr::mutate(unique = 1) %>%
-  na.omit() %>%
-  dplyr::mutate(drugtrait = paste(condition, trait, sep = ".")) %>%
-  dplyr::distinct(drugtrait,.keep_all = TRUE)
+    dplyr::filter(!grepl("red|yellow|green|iqr|f.", trait)) %>%
+    group_by(condition,chr) %>%
+    arrange(condition,chr,ci_l_pos,ci_r_pos) %>%
+    dplyr::mutate(unique = 1) %>%
+    na.omit() %>%
+    dplyr::mutate(drugtrait = paste(condition, trait, sep = "."), 
+                  qtl = paste(marker, drugtrait, sep = "."))
 
-corrcoeff <- NA
-VE <- NA
-trait1 <- NA
-trait2 <- NA
-lod1 <- NA
-lod2 <- NA
-
-VEoverlaps <- data.frame(corrcoeff, VE, trait1, trait2, lod1, lod2)
-
-
+#Make dataframe that has for each pair of overlapped traits what is their correlation
+groupedoverlaps <- data.frame(corrcoeff = NA, VE = NA, trait1 = NA, trait2 = NA, chrtrait1 = NA, chrtrait2 = NA)
 for(i in 1:(nrow(peaks)-1)) {
-  for(j in (i+1):nrow(peaks)) {
-    if(peaks$chr[i] == peaks$chr[j] &&
-       peaks$ci_l_pos[j] <= peaks$ci_r_pos[i] &&
-       peaks$ci_r_pos[j] >= peaks$ci_l_pos[i] &&
-       peaks$condition[j] == peaks$condition[i]) {
-          corr <- abs(corrs[peaks$drugtrait[i],peaks$drugtrait[j]])
-          VE <- min(peaks$var_exp[i], peaks$var_exp[j])
-          trait1 <- peaks$drugtrait[i]
-          trait2 <- peaks$drugtrait[j]
-          lod1 <- peaks$lod[i]
-          lod2 <- peaks$lod[j]
-          all <- c(corr, VE, trait1, trait2, lod1, lod2)
-          VEoverlaps <- rbind(VEoverlaps, all)
+    for(j in (i+1):nrow(peaks)) {
+        if(peaks$chr[i] == peaks$chr[j] &&
+           peaks$ci_l_pos[j] <= peaks$ci_r_pos[i] &&
+           peaks$ci_r_pos[j] >= peaks$ci_l_pos[i] &&
+           peaks$condition[j] == peaks$condition[i]) {
+            corr <- abs(corrs[peaks$drugtrait[i],peaks$drugtrait[j]])
+            VE <- min(peaks$var_exp[i], peaks$var_exp[j]) # why is this the min?
+            trait1 <- peaks$drugtrait[i]
+            trait2 <- peaks$drugtrait[j]
+            chrtrait1 <- peaks$qtl[i]
+            chrtrait2 <- peaks$qtl[j]
+            all <- c(corr, VE, trait1, trait2, chrtrait1, chrtrait2)
+            groupedoverlaps <- rbind(groupedoverlaps, all)
+        }
     }
-  }
-  
 }
 
-VEoverlaps <- as.data.frame(VEoverlaps) %>%
-  na.omit()
+groupedoverlaps <- groupedoverlaps %>%
+    na.omit()
 
-VEoverlaps$corrcoeff <- as.numeric(VEoverlaps$corrcoeff)
-VEoverlaps$VE <- as.numeric(VEoverlaps$VE)
+groupedoverlaps$corrcoeff <- as.numeric(groupedoverlaps$corrcoeff)
+groupedoverlaps$VE <- as.numeric(groupedoverlaps$VE)
 
-VE95th <- stats::quantile(VEoverlaps$VE, .95)
+VE95th <- stats::quantile(groupedoverlaps$VE, .95)
 
-overlapthresh <- VEoverlaps %>%
+overlapthresh <- groupedoverlaps %>%
   dplyr::mutate(above = ifelse(VE > VE95th, "yes", "no"))
 
 overlapVEhist <- ggplot2::ggplot(data = overlapthresh) +
@@ -1375,8 +1369,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(cowplot)
 library(Hmisc)
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.RData?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
 
 VE <- varianceComponents %>%
   dplyr::select(condition, trait, narrowsense_h2, interaction_VE) %>%
@@ -1454,7 +1448,7 @@ print(plot)
 
 ```
 
-**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each of the 120 traits that represent one of the 143 distinct QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
+**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each of the 120 traits that represent one of the 144 distinct QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
 
 
 ```{r s5, echo=FALSE, out.width='100%'}
@@ -1464,13 +1458,13 @@ knitr::include_graphics("~/Downloads/figS5.pdf")
 
 ```
 
-**Figure S5** NIL and CSS trait categorizations. (**A**) Flowchart for categorizing traits from the NIL or CSS phenotyping assays. (**B**) Six categories across both CSS and NIL assays for traits on chromosome V. The miscellaneous category is not depicted, but encompasses any other combination of NIL and CSS assay results.
+**Figure S5** NIL and CSS trait categorizations. (**A**) Flowchart for categorizing traits from the NIL or CSS phenotyping assays. (**B**) Six categories across both NIL and CSS assays for traits on chromosome V. The miscellaneous category is not depicted, but encompasses any other combination of NIL and CSS assay results.
 
 
-```{r s6,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=5}
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_correlated_traits.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.RData?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.RData?raw=TRUE")
+```{r s6,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=6}
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_correlated_traits.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
 
 peaks <- allAnnotatedLods %>%
     na.omit()
@@ -1516,24 +1510,24 @@ nilassay <- correlated_traits %>%
 # Of the correlated grouped traits, how many of them are in the same category?
 cortrtcat <- correlated_traits %>%
     dplyr::left_join(assays_category) %>%
-    dplyr::select(chr, condition, trait, representative_trait, trait_correlation, exp, primary_category) %>%
+    dplyr::select(chr, condition, trait, representative_trait, representative_qtl, trait_correlation, exp, primary_category) %>%
     dplyr::filter(!is.na(primary_category), exp != "CSSV") %>%
-    # dplyr::filter(primary_category != "parents_not_significant") %>%
-    dplyr::group_by(representative_trait, exp) %>%
+    dplyr::mutate(marker = stringr::str_split_fixed(representative_qtl, "\\.", 2)[,1],
+                  representative_QTL = paste0(representative_trait, " (", exp, ")")) %>%
+    dplyr::group_by(representative_QTL, exp) %>%
     dplyr::mutate(num_traits = n()) %>%
     dplyr::filter(num_traits > 1) %>%
-    dplyr::group_by(representative_trait, primary_category, exp) %>%
+    dplyr::group_by(representative_QTL, primary_category, exp) %>%
     dplyr::mutate(num_cat = n()) %>%
     dplyr::mutate(perc_cat = num_cat / num_traits *100) %>%
-    dplyr::arrange(representative_trait, exp) %>%
-    # dplyr::arrange(perc_cat) %>%
-    dplyr::distinct(representative_trait, exp, primary_category, .keep_all = T)
-cortrtcat$representative_trait <- factor(cortrtcat$representative_trait, levels = unique(cortrtcat$representative_trait))
+    dplyr::arrange(desc(representative_QTL), desc(exp)) %>%
+    dplyr::distinct(representative_QTL, exp, primary_category, .keep_all = T)
+cortrtcat$representative_QTL <- factor(cortrtcat$representative_QTL, levels = unique(cortrtcat$representative_QTL))
 cortrtcat$primary_category <- factor(cortrtcat$primary_category, levels = c("parents_not_significant", "miscellaneous", "bidirectional_transgressive", "unidirectional_transgressive", "no_qtl_effect", "recapitulation"), labels = c("Parents Not Significant", "Miscellaneous", "Bidirectional Transgressive",
                                                                             "Unidirectional Transgressive", "No Qtl Effect", "Recapitulation"))
 
 # stacked barplot
-corgroupplot <- ggplot2::ggplot(data = cortrtcat, ggplot2::aes(x = representative_trait, y = perc_cat)) +
+corgroupplot <- ggplot2::ggplot(data = cortrtcat, ggplot2::aes(x = representative_QTL, y = perc_cat)) +
   ggplot2::geom_bar(aes(fill = primary_category), stat = "identity") +
   ggplot2::scale_fill_manual(values = c(Recapitulation = "forestgreen", `No Qtl Effect` = "darkred", `Unidirectional Transgressive` = "steelblue1",
                                         `Bidirectional Transgressive` = "steelblue4", `Miscellaneous` = "grey75", `Parents Not Significant` = "grey51"),
@@ -1541,12 +1535,14 @@ corgroupplot <- ggplot2::ggplot(data = cortrtcat, ggplot2::aes(x = representativ
                                                            "Miscellaneous", "Parents Not Significant"))+
   ggplot2::geom_text(ggplot2::aes(label = num_traits, y = 95), color = "white") +
   ggplot2::theme_bw() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1, vjust = 0.5), 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.5), 
                  axis.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
                  axis.title = ggplot2::element_text(size = 12, face = "bold", color = "black")) +
-  ggplot2::labs(y = "Percent of traits", x = "Representative Trait")
+  ggplot2::labs(y = "Percent of traits", x = "Representative QTL") +
+  ggplot2::coord_flip()
 print(corgroupplot)
 
 ```
 
 **Figure S6** Categorization of correlated traits. The x-axis shows the representative trait (the trait with the highest LOD score) of a cluster of correlated traits with overlapping QTL confidence intervals. Each color represents the NIL assay categorization for each trait within a correlation cluster - either recapitulation (green), no QTL effect (red), unidirectional transgressive phenotype (light blue), bidirectional transgressive phenotype (dark blue), miscellaneous (light grey) or no significant parental difference (dark grey). The percent of all traits within the correlation cluster that falls within a given category is shown on the y-axis. Numbers above each bar indicate the number of traits within a correlation cluster.
+
