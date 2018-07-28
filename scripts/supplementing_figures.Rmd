@@ -1485,15 +1485,15 @@ self_represent <- correlated_traits %>%
     dplyr::group_by(representative_trait) %>%
     dplyr::mutate(num_traits = n()) %>%
     dplyr::filter(num_traits == 1)
-#length(unique(self_represent$representative_trait))
+length(unique(self_represent$representative_trait))
 
 # How many traits represent at least one other trait
 group_represent <- correlated_traits %>%
-    dplyr::mutate(drugtrait = paste0(chr, ".", condition, ".", trait)) %>%
+    dplyr::mutate(drugtrait = paste0(marker, ".", condition, ".", trait)) %>%
     dplyr::group_by(representative_trait) %>%
     dplyr::mutate(num_traits = n()) %>%
     dplyr::filter(num_traits > 1)
-#length(unique(group_represent$representative_trait))
+length(unique(group_represent$representative_trait))
 
 
 # how many correlated groups did we test with nIL assay?
@@ -1505,7 +1505,7 @@ nilassay <- correlated_traits %>%
     dplyr::mutate(num_traits = n()) %>%
     dplyr::filter(num_traits > 1) %>%
     tidyr::drop_na(exp)
-#length(unique(nilassay$representative_trait))
+length(unique(nilassay$representative_trait))
 
 # Of the correlated grouped traits, how many of them are in the same category?
 cortrtcat <- correlated_traits %>%
