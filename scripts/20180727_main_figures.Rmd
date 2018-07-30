@@ -15,14 +15,15 @@ library(grid)
 library(repmis)
 
 ######## Figure 1: Unique QTL plot ########
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS4_allAnnotatedLods.Rda?raw=TRUE")
 
 
 textsize = 10
 titlesize = 12
 
-threetrait <- uniqueQTL %>%
+threetrait <- allAnnotatedLods %>%
     dplyr::ungroup() %>%
+    tidyr::separate(trait, c("condition", "trait"), sep = "\\.") %>%
     dplyr::group_by(condition, chr) %>%
     dplyr::arrange(condition, chr, ci_l_pos, ci_r_pos) %>%
     na.omit() %>%
@@ -54,16 +55,19 @@ threetrait$condition <- factor(threetrait$condition, levels = c("carmustine", "F
 
 #Set chromosome boundaries
 newrows <- threetrait[1,] 
-newrows[1,] = c("I",5000000,"Cadmium", "q25.EXT",0,1,14972282, "Heavy metal")
-newrows[2,] = c("II",5000000,"Cadmium", "q25.EXT",0,1,15173999,"Heavy metal")
-newrows[3,] = c("III",5000000,"Cadmium","q25.EXT",0,1,13829314,"Heavy metal")
-newrows[4,] = c("IV",5000000,"Cadmium","q25.EXT",0,1,17450860,"Heavy metal")
-newrows[5,] = c("V",5000000,"Cadmium","q25.EXT",0,1,20914693,"Heavy metal")
-newrows[6,] = c("X",5000000,"Cadmium","q25.EXT",0,1,17748731,"Heavy metal")
+newrows[1,] = c("I",5000000,"Cadmium", "PC1",0,1,14972282, "Heavy metal")
+newrows[2,] = c("II",5000000,"Cadmium", "PC1",0,1,15173999,"Heavy metal")
+newrows[3,] = c("III",5000000,"Cadmium","PC1",0,1,13829314,"Heavy metal")
+newrows[4,] = c("IV",5000000,"Cadmium","PC1",0,1,17450860,"Heavy metal")
+newrows[5,] = c("V",5000000,"Cadmium","PC1",0,1,20914693,"Heavy metal")
+newrows[6,] = c("X",5000000,"Cadmium","PC1",0,1,17748731,"Heavy metal")
 newrows$ci_l_pos <- as.numeric(newrows$ci_l_pos)
 newrows$ci_r_pos <- as.numeric(newrows$ci_r_pos)
 newrows$pos <- as.numeric(newrows$pos)
 newrows$lod <- as.numeric(newrows$lod)
+
+newrows <- newrows %>%
+    dplyr::ungroup()
 
 ourcolors <- grDevices::topo.colors(15)[1:11]
 #Plot
@@ -98,35 +102,34 @@ elements <- ggplot2::ggplotGrob(unique_all)
 panels = subset(elements$layout, grepl("strip-r", elements$layout$name), t:r)
 chemos = grid::rectGrob(gp = gpar(col = "#1B9E77", lwd = 5, fill = NA))
 gt <- gtable::gtable_add_grob(elements, chemos ,
-                              t = 7, l = 15, b = 19, r = 17)
+                              t = 8, l = 16, b = 20, r = 17)
 metals = grid::rectGrob(gp = gpar(col = "#D95F02", lwd = 5, fill = NA))
 gt <- gtable::gtable_add_grob(gt, metals,
-                              t = 21, l = 15, b = 27, r = 17)
+                              t = 22, l = 16, b = 28, r = 17)
 pesticides = grid::rectGrob(gp = gpar(col = "#7570B3", lwd = 5, fill = NA))
 gt <- gtable::gtable_add_grob(gt, pesticides,
-                              t = 29, l = 15, b = 35, r = 17)
+                              t = 30, l = 16, b = 36, r = 17)
 neuro = grid::rectGrob(gp = gpar(col = "#E7298A", lwd = 5, fill = NA))
 gt <- gtable::gtable_add_grob(gt, neuro,
-                              t = 37, l = 15, b = 37, r = 17)
-png("~/Dropbox/AndersenLab/QTLpaper/writing/20180628_submission/figures/Figure1.png", height = 7.5, width = 7.5, units = "in", res = 300)
+                              t = 38, l = 16, b = 38, r = 17)
+# png("~/Dropbox/AndersenLab/QTLpaper/writing/20180628_submission/figures/Figure1.png", height = 7.5, width = 7.5, units = "in", res = 300)
 grid::grid.newpage()
 grid::grid.draw(gt)
 dev.off()
 
 
+
 ```
 
-**Figure 1** Diverse genetic architectures are implicated in responses to 16 toxins. Linkage mapping results for traits that represent 144 distinct QTL across 16 toxins, comprising chemotherapeutics (teal), heavy metals (orange), pesticides (purple), and neuropharmaceuticals (pink) are plotted. Genomic position (Mb) is shown along the x-axis, split by chromosome, and each trait that represents a distinct QTL is plotted along the y-axis. Each QTL is plotted as a point at the location of the most significant genetic marker and a line indicating the 95% confidence interval. QTL are colored by the logarithm of the odds (LOD) score, increasing in significance from blue to green to yellow.
+**Figure 1** Diverse genetic architectures are implicated in responses to 16 toxins. Linkage mapping results for traits that represent 82 QTL across 16 toxins, comprising chemotherapeutics (teal), heavy metals (orange), pesticides (purple), and neuropharmaceuticals (pink) are plotted. Genomic position (Mb) is shown along the x-axis, split by chromosome, and each trait that represents a QTL is plotted along the y-axis. Each QTL is plotted as a point at the location of the most significant genetic marker and a line indicating the 95% confidence interval. QTL are colored by the logarithm of the odds (LOD) score, increasing in significance from blue to green to yellow.
 
 \newpage
 
 ```{r fig2, fig.width=7.5, fig.height=3,warning=F, message=F, echo=F,comment="K",results='hide', dpi = 300}
 
 ######## Figure 2: VE v. H2 and H2 v. h2 ########
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.Rda?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS1_dosedata.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS4_allAnnotatedLods.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_varianceComponents.Rda?raw=TRUE")
 
 # define drug classes
 drugclasses <- data.frame(drug = c("carmustine", "chlorothalonil", "FUdR", "irinotecan", "mechlorethamine", "topotecan",
@@ -167,7 +170,6 @@ for(i in 1:nrow(VE_SE_QTL)) {
 
 alltraits <- allAnnotatedLods %>%
     na.omit() %>%
-    dplyr::filter(trait %in% uniqueQTL$drugtrait) %>%
     dplyr::arrange(trait)
 
 additive <- VE_SE_QTL %>%
@@ -239,7 +241,7 @@ fig2
 
 ```
 
-**Figure 2** Additive genetic components identified by linkage mapping do not explain all heritable contributions to toxin-response variation. For 120 traits representing the 144 distinct QTL, we compared (**A**) the broad-sense heritability (x-axis) calculated from the dose-response data versus the narrow-sense heritability (y-axis) estimated by linkage mapping and (**B**) the narrow-sense heritability (x-axis) versus the variance explained by all QTL detected by linkage mapping (y-axis). In both plots, each trait is plotted as a point whose color indicates drug class (chemotherapeutic, heavy metal, neuropharmaceutical, or pesticide). The diagonal line represents y = x and is shown as a visual guide.
+**Figure 2** Additive genetic components identified by linkage mapping do not explain all heritable contributions to toxin-response variation. For 47 traits representing the 82 QTL, we compared (**A**) the broad-sense heritability (x-axis) calculated from the dose-response data versus the narrow-sense heritability (y-axis) estimated by linkage mapping and (**B**) the narrow-sense heritability (x-axis) versus the variance explained by all QTL detected by linkage mapping (y-axis). In both plots, each trait is plotted as a point whose color indicates drug class (chemotherapeutic, heavy metal, neuropharmaceutical, or pesticide). The diagonal line represents y = x and is shown as a visual guide.
 
 \newpage
 
@@ -258,7 +260,7 @@ mappos <- merge(map, RIAILmarkerconversion, by= "id")
 colnames(mappos)[3:4] <- c("cM", "pos")
 
 #load in dataframe of unique QTL (annotated_lod df for each trait you are using for the plot, distinct will be called later in case of multiple peaks per QTL)
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS7_uniqueQTL.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS4_allAnnotatedLods.Rda?raw=TRUE")
 
 QTLperbin <- function(mappos, uniqueQTL, numcm = 30, pval = .01, bonferroni = "FALSE") {
     
@@ -354,25 +356,29 @@ QTLperbin <- function(mappos, uniqueQTL, numcm = 30, pval = .01, bonferroni = "F
     
 }
 
+peaks <- allAnnotatedLods %>%
+    na.omit() %>%
+    dplyr::mutate(drugtrait = trait) %>%
+    tidyr::separate(trait, c("condition", "trait"), sep = "\\.")
 
-QTLperbin(mappos, uniqueQTL, numcm = 26, pval = 0.05, bonferroni = "TRUE")
+QTLperbin(mappos, peaks, numcm = 26, pval = 0.01, bonferroni = "FALSE")
 summary[[1]]
 # ggsave(plot, file = "~/Dropbox/AndersenLab/QTLpaper/writing/20180628_submission/figures/Figure3.png", height = 2.5, width = 7.5)
 
 
 ```
 
-**Figure 3** Three QTL hotspots impact condition responses. Each chromosome is divided into bins of 26 cM, resulting in a total of 65 bins across the genome. The x-axis shows the genomic position (Mb), and the y-axis shows the number of the 144 distinct QTL that lie within the corresponding bin. The red line indicates the 95th percentile of a Poisson distribution with a mean of 2.2 QTL (total QTL/total bins). 
+**Figure 3** Three QTL hotspots impact condition responses. Each chromosome is divided into equal bins of 26 cM, resulting in a total of 65 bins across the genome. The x-axis shows the genomic position (Mb), and the y-axis shows the number of the QTL that lie within the corresponding bin. The red line indicates the 99th percentile of a Poisson distribution with a mean of1.26 QTL (total QTL/total bins). 
 
 \newpage
 
 ```{r fig4, fig.width=7.5, fig.height=10,warning=F, message=F, echo=F,comment="K",results='hide', dpi = 300}
 
 ####### Figure 4: NIL and CSS overview figure #####
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.Rda?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.Rda?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
-source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
 
 #VE_SE_QTL
 VE <- varianceComponents %>%
