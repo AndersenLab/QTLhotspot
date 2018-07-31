@@ -372,13 +372,14 @@ summary[[1]]
 
 \newpage
 
-```{r fig4, fig.width=7.5, fig.height=10,warning=F, message=F, echo=F,comment="K",results='hide', dpi = 300}
+```{r fig4, fig.width=7.5, fig.height=8,warning=F, message=F, echo=F,comment="K",results='hide', dpi = 300}
 
 ####### Figure 4: NIL and CSS overview figure #####
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.Rda?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.Rda?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS3_allAnnotatedLods.Rda?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS9_allNILCSSregressed.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_css_nil_stats.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS4_allAnnotatedLods.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_varianceComponents.Rda?raw=TRUE")
+source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.Rda?raw=TRUE")
 
 #VE_SE_QTL
 VE <- varianceComponents %>%
@@ -578,12 +579,12 @@ maxlodplot_kt <- function (map, t) {
                      panel.background = ggplot2::element_rect(color = "black", size = 1.2))
     return(plot)
 }
-plot_add_int <- function(df) {
+plot_add_int <- function(df, tit = "") {
   ggplot2::ggplot(df) +
     ggplot2::geom_bar(data = df, ggplot2::aes(x = trait,y = VE, 
                                               fill = factor(type, levels = c("Interactive", "Additive"))), stat = "identity") +
     ggplot2::scale_fill_manual("Key", values = c("slateblue2", "cadetblue3"))+
-    ggplot2::labs(y = "VE", x = "") + 
+    ggplot2::labs(y = "VE", x = tit) + 
     ggplot2::geom_errorbar(ggplot2::aes(x = trait, ymin = lower, ymax = higher, group = n, linetype = type), 
                            width = 0.7, position = position_dodge(0.4)) +
     ggplot2::theme(axis.text.x = ggplot2::element_blank(),
@@ -1050,26 +1051,28 @@ plotstats <- function(drug, trt, expr) {
     return(fullstats)
 }
 
-# Make dataframe of categories to plot
-categories <- data.frame(matrix(ncol = 3, nrow = 0))
-perfect <- c("cisplatin", "norm.n", "perfect")
-power <- c("carmustine", "n", "power")
-inter_ex <- c("silver", "median.TOF", "inter_ex")
-inter_in <- c("chlorothalonil", "q25.TOF", "inter_in")
-intra <- c("cisplatin", "q90.EXT", "intra")
-categories <- rbind(categories, perfect, power, inter_ex, inter_in, intra)
-names(categories) <- c("condition", "trait", "category")
+categories <- assays_category %>%
+    na.omit() %>%
+    dplyr::mutate(drugtrait = paste0(condition, ".", trait)) %>%
+    dplyr::filter(drugtrait %in% c("cisplatin.norm.n", "cisplatin.q90.TOF", "chlorothalonil.q25.TOF", "silver.median.TOF")) %>%
+    dplyr::mutate(PC_trait = case_when(drugtrait == "cisplatin.norm.n" ~ "cisplatin.PC4",
+                                       drugtrait == "cisplatin.q90.TOF" ~ "cisplatin.PC1",
+                                       drugtrait == "chlorothalonil.q25.TOF" ~ "chlorothalonil.PC1",
+                                       drugtrait == "silver.median.TOF" ~ "silver.PC1")) %>%
+    dplyr::distinct(PC_trait, .keep_all = T)
 
 # Make plots
 plot_list <- NULL
-for(i in 1:nrow(categories)) {
-    drug <- as.character(categories$condition[i])
-    trt <- as.character(categories$trait[i])
+for(i in c("cisplatin.PC4", "silver.PC1", "chlorothalonil.PC1",  "cisplatin.PC1")) {
+    row <- which(categories$PC_trait == i)
+    # drug <- as.character(categories$condition[row])
+    # trt <- as.character(categories$trait[row])
     
     VE <- cowplot::plot_grid(NULL, plot_add_int(VE_SE_QTL %>% 
-                                                  dplyr::filter(condition == drug, trait == trt)),
+                                                    dplyr::mutate(drugtrait = paste0(condition, ".", trait)) %>%
+                                                  dplyr::filter(drugtrait == i), stringr::str_split_fixed(i, "\\.", 2)[,2]),
                              nrow = 2, rel_heights = c(.2,1.5))
-    nil_css <- plot_cssV_V(drug, trt, plotstats(drug, trt, c("V", "CSSV")))
+    nil_css <- plot_cssV_V(categories$condition[row], categories$trait[row], plotstats(categories$condition[row], categories$trait[row], c("V", "CSSV")))
     plot <- cowplot::plot_grid(nil_css, VE, align = "h", nrow = 1, rel_widths = c(1,0.2)) + 
         cowplot::draw_plot_label("(i)", x = .03, y = 0.97, size = 14, fontface = "plain") +
         cowplot::draw_plot_label("(ii)", x = .83, y = 0.97, size = 14, fontface = "plain")
@@ -1077,13 +1080,13 @@ for(i in 1:nrow(categories)) {
     plot_list[[i]] <- plot 
 }
 
-all <- cowplot::plot_grid(plotlist = plot_list, nrow = 5, ncol = 1, labels = c("A", "B", "C", "D", "E"))
+all <- cowplot::plot_grid(plotlist = plot_list, nrow = 4, ncol = 1, labels = c("A", "B", "C", "D"))
 all
 # ggsave(all, height = 10, width = 7.5, file = "~/Dropbox/AndersenLab/QTLpaper/writing/20180628_submission/figures/Figure4.png")
 
 ```
 
-**Figure 4** Results from near-isogenic line (NIL) and chromosome-substitution strain (CSS) assays are categorized based on potential variance components implicated in toxin responses. A trait representing each of five categories of variance components (**A**) Recapitulation (cisplatin norm.n), (**B**) No QTL effect (carmustine n) (**C**) Interchromosomal external bidirectional loci (silver median.TOF), (**D**) Interchromosomal internal unidirectional loci (chlorothalonil q25.TOF), and (**E**) Intra-chromosomal unidirectional lci (cisplatin q90.EXT)] is reported. In each case, we show results from (i) the CSS assay (left) and NIL assay (right) plotted as Tukey box plots. The y-axis indicates residual phenotypic values for the given trait. Different letters (A-D) above each Tukey box plot represent significant differences (p < 0.05) while the same letter represents non-significant differences between two strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). (ii) A stacked bar plot shows the the proportion of phenotypic variation attributable to additive (light blue with dashed error bars) and interactive (dark blue with solid error bars) genetic factors, based on a mixed model.
+**Figure 4** Results from near-isogenic line (NIL) and chromosome-substitution strain (CSS) assays are categorized based on potential variance components implicated in toxin responses. A trait contributing to a mapped principal component for each variance componenet category [(**A**) Recapitulation (cisplatin norm.n, PC1), (**B**) Interchromosomal external bidirectional loci (silver median.TOF, PC1), (**D**) Interchromosomal internal unidirectional loci (chlorothalonil q25.TOF, PC1), and (**E**) Intra-chromosomal unidirectional loci (cisplatin q90.TOF, PC1)] is reported. In each case, we show results from (i) the NIL assay (left) and CSS assay (right) plotted as Tukey box plots. The y-axis indicates residual phenotypic values for the given trait. Different letters (*a-d*) above each Tukey box plot represent significant differences (p < 0.05) while the same letter represents non-significant differences between two strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). (ii) A stacked bar plot shows the the proportion of phenotypic variation attributable to additive (light blue with dashed error bars) and interactive (dark blue with solid error bars) genetic factors of the principal component represented by each trait, based on a mixed model.
 
 
 \newpage
