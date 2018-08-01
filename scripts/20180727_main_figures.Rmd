@@ -1054,16 +1054,16 @@ plotstats <- function(drug, trt, expr) {
 categories <- assays_category %>%
     na.omit() %>%
     dplyr::mutate(drugtrait = paste0(condition, ".", trait)) %>%
-    dplyr::filter(drugtrait %in% c("cisplatin.norm.n", "cisplatin.q90.TOF", "chlorothalonil.q25.TOF", "silver.median.TOF")) %>%
+    dplyr::filter(drugtrait %in% c("cisplatin.norm.n", "cisplatin.q90.TOF", "carmustine.median.EXT", "silver.median.TOF")) %>%
     dplyr::mutate(PC_trait = case_when(drugtrait == "cisplatin.norm.n" ~ "cisplatin.PC4",
                                        drugtrait == "cisplatin.q90.TOF" ~ "cisplatin.PC1",
-                                       drugtrait == "chlorothalonil.q25.TOF" ~ "chlorothalonil.PC1",
+                                       drugtrait == "carmustine.median.EXT" ~ "carmustine.PC1",
                                        drugtrait == "silver.median.TOF" ~ "silver.PC1")) %>%
     dplyr::distinct(PC_trait, .keep_all = T)
 
 # Make plots
 plot_list <- NULL
-for(i in c("cisplatin.PC4", "silver.PC1", "chlorothalonil.PC1",  "cisplatin.PC1")) {
+for(i in c("cisplatin.PC4", "silver.PC1", "carmustine.PC1",  "cisplatin.PC1")) {
     row <- which(categories$PC_trait == i)
     # drug <- as.character(categories$condition[row])
     # trt <- as.character(categories$trait[row])
@@ -1086,7 +1086,7 @@ all
 
 ```
 
-**Figure 4** Results from near-isogenic line (NIL) and chromosome-substitution strain (CSS) assays are categorized based on potential variance components implicated in toxin responses. A trait contributing to a mapped principal component for each variance componenet category [(**A**) Recapitulation (cisplatin norm.n, PC1), (**B**) Interchromosomal external bidirectional loci (silver median.TOF, PC1), (**D**) Interchromosomal internal unidirectional loci (chlorothalonil q25.TOF, PC1), and (**E**) Intra-chromosomal unidirectional loci (cisplatin q90.TOF, PC1)] is reported. In each case, we show results from (i) the NIL assay (left) and CSS assay (right) plotted as Tukey box plots. The y-axis indicates residual phenotypic values for the given trait. Different letters (*a-d*) above each Tukey box plot represent significant differences (p < 0.05) while the same letter represents non-significant differences between two strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). (ii) A stacked bar plot shows the the proportion of phenotypic variation attributable to additive (light blue with dashed error bars) and interactive (dark blue with solid error bars) genetic factors of the principal component represented by each trait, based on a mixed model.
+**Figure 4** Results from near-isogenic line (NIL) and chromosome-substitution strain (CSS) assays are categorized based on potential variance components implicated in toxin responses. A trait contributing to a mapped principal component for each variance componenet category [(**A**) Recapitulation (cisplatin norm.n, PC1), (**B**) Interchromosomal external bidirectional loci (silver median.TOF, PC1), (**D**) Interchromosomal internal unidirectional loci (carmustine median.EXT, PC1), and (**E**) Intra-chromosomal unidirectional loci (cisplatin q90.EXT, PC1)] is reported. In each case, we show results from (i) the NIL assay (left) and CSS assay (right) plotted as Tukey box plots. The y-axis indicates residual phenotypic values for the given trait. Different letters (*a-d*) above each Tukey box plot represent significant differences (p < 0.05) while the same letter represents non-significant differences between two strains (Tukey HSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). (ii) A stacked bar plot shows the the proportion of phenotypic variation attributable to additive (light blue with dashed error bars) and interactive (dark blue with solid error bars) genetic factors of the principal component represented by each trait, based on a mixed model.
 
 
 \newpage

@@ -4,7 +4,7 @@ geometry: margin=1in
 mainfont: Times New Roman
 ---
 
-```{r s1,warning=F, message=F, echo=F,comment="K",results='hide'}
+```{r load_data,warning=F, message=F, echo=F,comment="K",results='hide'}
 #load all datasets
 
 library(repmis)
@@ -20,12 +20,15 @@ source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS10_
 source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS11_assays_category.Rda?raw=TRUE")
 library(linkagemapping)
 library(ggdendro)
+library(tidyverse)
 data("N2xCB4856cross")
+knitr::opts_knit$set(progress = FALSE)
+
 
 ```
 
 
-```{r s1_2,warning=F, message=F, echo=F,comment="K",results='asis'}
+```{r s1,warning=F, message=F, echo=F,comment="K",results='asis'}
 library(pander)
 library(stringr)
 library(knitr)
@@ -96,158 +99,176 @@ splitbydose <- split(traitcordrugs, paste(traitcordrugs$condition))
 
 ```
 
-```{r s1_3, fig.width=7.5, fig.height=10,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
-
-# reorder_cormat <- function(cormat){
-#     # Use correlation between variables as distance
-#     dd <- as.dist((1-cormat)/2)
-#     hc <- hclust(dd)
-#     cormat <-cormat[hc$order, hc$order]
-# }
-# 
-# for (i in 1:length(dosedrugs)) {
-#     
-#     traitdf <- dosedata %>%
-#         dplyr::filter(trait %in% c("norm.n", "mean.TOF","mean.norm.EXT"), grepl(dosedrugs[i], condition)|grepl(dosecontrols[i],condition), plate == doseplates[i]) %>%
-#         dplyr::group_by(strain)
-#     
-#     traitdf$trait <- factor(traitdf$trait, levels = c("norm.n","mean.TOF","mean.norm.EXT"), labels = c("Brood Size", "Mean Length", "Mean Optical Density"))
-#     
-#     doseplot <- ggplot2::ggplot(traitdf) +
-#         ggplot2::theme_bw()+
-#         ggplot2::aes(x=condition, y=phenotype, fill=strain) +
-#         ggplot2::geom_point(position = position_jitterdodge(jitter.width = 0.2), size = .5)+
-#         ggplot2::geom_boxplot(outlier.size=NA, outlier.color = NA,alpha = .5)+
-#         ggplot2::scale_x_discrete(limits=levels(concentrations[[i]]), labels = doselabels[[i]])+
-#         ggplot2::scale_fill_manual(values=c("blue","green","pink","orange"), guide_legend(title = "Strain"))+
-#         ggplot2::ggtitle(Hmisc::capitalize(dosedrugs[i])) +
-#         ggplot2::labs(x = "Concentration (µM)", y = "Raw Phenotype") +
-#         ggplot2::facet_wrap(~ trait, scales = "free") +
-#         ggplot2::theme(axis.text.x = ggplot2::element_text(size=10, face = "bold", color="black"),
-#                        axis.text.y = ggplot2::element_text(size=10, face = "bold", color="black"),
-#                        axis.title.x = ggplot2::element_text(size=12, face = "bold", color="black"),
-#                        axis.title.y = ggplot2::element_text(size=12, face = "bold", color="black"),
-#                        plot.title = ggplot2::element_text(size=12, face = "bold", color = "black", hjust = .5),
-#                        strip.background = ggplot2::element_rect(fill = NA),
-#                        strip.text = ggplot2::element_text(size = 12, face = "bold", color = "black"),
-#                        legend.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
-#                        legend.title = ggplot2::element_text(size = 10, face = "bold", color = "black"),
-#                        legend.key.size = grid::unit(.2, "in"),
-#                        legend.margin = ggplot2::margin(0, 0, 0, 0, "in"))
-#     
-#     traitcor <- splitbydose[[i]] %>%
-#         dplyr::filter(trait %in% c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF", "mean.EXT", "q75.TOF",
-#                                    "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT", "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT",
-#                                    "q75.norm.EXT", "q90.norm.EXT"))
-#     #ordered traits based on correlation structure for each toxin:
-#     # traitcor$trait <- factor(traitcor$trait, levels = c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF",
-#     #                                                     "mean.EXT", "q75.TOF", "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT",
-#     #                                                     "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT", "q75.norm.EXT", "q90.norm.EXT"))
-#     
-#     
-#     traitcor<- traitcor %>%
-#         tidyr::spread(trait, phenotype) %>%
-#         dplyr::ungroup() %>%
-#         dplyr::select(cv.EXT:var.TOF)
-#     traitcormat <- cor(traitcor)
-#     reordered <- reorder_cormat(traitcormat)
-#     
-#     save_plot <- ggplot2::ggplot(data=melt(reordered), ggplot2::aes(Var1,Var2, fill=value^2))+
-#         ggplot2::geom_tile() +
-#         ggplot2::scale_fill_gradientn(colours=terrain.colors(6), name=expression(bold(italic("r")^2)))+
-#         ggplot2::theme_bw() +
-#         ggplot2::theme(axis.text.x = ggplot2::element_text(size=10, face = "bold", color="black", angle=60, hjust=1),
-#                        axis.text.y = ggplot2::element_text(size=10, face = "bold", color="black"),
-#                        plot.title = ggplot2::element_text(size = 12, face = "bold", color = "black", hjust = .5),
-#                        panel.background = ggplot2::element_rect(fill = '#E5E8E8'),
-#                        legend.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
-#                        legend.title = ggplot2::element_text(size = 10, face = "bold", color = "black"))+
-#         ggplot2::labs(title=splitbydose[[i]]$condition[1], x=NULL, y=NULL)
-#     
-#     print(cowplot::plot_grid(doseplot, save_plot, nrow = 2, ncol = 1, labels = c("A", "B"), rel_heights = c(1, 2)))
-#     
-#     cat("\n\n\n")
-#     cat("\n\n\\pagebreak\n")
-#    
-# }
-```
-
-**Figure S1** Dose-response High Throughput Assay. (**A**) Raw phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters- brood size (norm.n), mean animal length (mean.TOF), and mean optical density (mean.norm.EXT) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait.
-
-```{r}
-
-set2RIAILs <- allRIAILregressed %>%
-    dplyr::filter(grepl("QX", strain))%>%
-    dplyr::mutate(strain2 = as.numeric(stringr::str_split_fixed(strain, "QX", 2)[,2])) %>%
-    dplyr::filter(strain2 >239)%>%
-    dplyr::select(-strain2)
+```{r s1_2, fig.width=7.5, fig.height=3,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
 
 reorder_cormat <- function(cormat){
     # Use correlation between variables as distance
     dd <- as.dist((1-cormat)/2)
-    hc <- hclust(dd) 
+    hc <- hclust(dd)
     cormat <-cormat[hc$order, hc$order]
+}
+
+for (i in 1:length(dosedrugs)) {
+
+    traitdf <- dosedata %>%
+        dplyr::filter(trait %in% c("norm.n", "mean.TOF","mean.norm.EXT"), grepl(dosedrugs[i], condition)|grepl(dosecontrols[i],condition), plate == doseplates[i]) %>%
+        dplyr::group_by(strain)
+
+    traitdf$trait <- factor(traitdf$trait, levels = c("norm.n","mean.TOF","mean.norm.EXT"), labels = c("Brood Size", "Mean Length", "Mean Optical Density"))
+
+    doseplot <- ggplot2::ggplot(traitdf) +
+        ggplot2::theme_bw()+
+        ggplot2::aes(x=condition, y=phenotype, fill=strain) +
+        ggplot2::geom_point(position = position_jitterdodge(jitter.width = 0.2), size = .5)+
+        ggplot2::geom_boxplot(outlier.size=NA, outlier.color = NA,alpha = .5)+
+        ggplot2::scale_x_discrete(limits=levels(concentrations[[i]]), labels = doselabels[[i]])+
+        ggplot2::scale_fill_manual(values=c("blue","green","pink","orange"), guide_legend(title = "Strain"))+
+        ggplot2::ggtitle(Hmisc::capitalize(dosedrugs[i])) +
+        ggplot2::labs(x = "Concentration (µM)", y = "Raw Phenotype") +
+        ggplot2::facet_wrap(~ trait, scales = "free") +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(size=10, face = "bold", color="black"),
+                       axis.text.y = ggplot2::element_text(size=10, face = "bold", color="black"),
+                       axis.title.x = ggplot2::element_text(size=12, face = "bold", color="black"),
+                       axis.title.y = ggplot2::element_text(size=12, face = "bold", color="black"),
+                       plot.title = ggplot2::element_text(size=12, face = "bold", color = "black", hjust = .5),
+                       strip.background = ggplot2::element_rect(fill = NA),
+                       strip.text = ggplot2::element_text(size = 12, face = "bold", color = "black"),
+                       legend.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
+                       legend.title = ggplot2::element_text(size = 10, face = "bold", color = "black"),
+                       legend.key.size = grid::unit(.2, "in"),
+                       legend.margin = ggplot2::margin(0, 0, 0, 0, "in"))
+    
+    print(doseplot)
+
+    cat("\n\n\n")
+    cat("\n\n\n")
+    cat("\n\n\n")
+    # cat("\n\n\\pagebreak\n")
+
+}
+```
+
+**Figure S1** Dose-response High Throughput Assay. (**A**) Raw phenotypic values for four divergent strains, CB4856 (blue), DL238 (green), JU258 (pink), and N2 (orange), in response to various concentrations of each toxin are plotted as Tukey box plots. Toxin responses for traits representing three distinct population parameters- brood size (norm.n), mean animal length (mean.TOF), and mean optical density (mean.norm.EXT) are shown. The x-axis indicates either the control (water or DMSO) or the concentration (µM) of the toxin, and the y-axis shows the raw phenotypic value for each trait.
+
+```{r s2, fig.width=7.5, fig.height=8,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
+
+RIAILPC <- allRIAILsPC %>%
+  dplyr::mutate(drugtrait = paste(condition, trait, sep = "."))
+
+
+set2RIAILs <- allRIAILregressed %>%
+  dplyr::filter(grepl("QX", strain))%>%
+  dplyr::mutate(strain2 = as.numeric(stringr::str_split_fixed(strain, "QX", 2)[,2])) %>%
+  dplyr::filter(strain2 >239)%>%
+  dplyr::select(-strain2)
+
+reorder_cormat <- function(cormat){
+  # Use correlation between variables as distance
+  dd <- as.dist((1-cormat)/2)
+  hc <- hclust(dd) 
+  cormat <-cormat[hc$order, hc$order]
 }
 
 splitbydrug <- split(set2RIAILs, set2RIAILs$condition)
 
-for (drug in unique(set2RIAILs$condition)) {
-    
-    traitcor <- splitbydrug[[drug]] %>%
-        dplyr::filter(trait %in% c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF", "mean.EXT", "q75.TOF",
-                                   "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT", "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT",
-                                   "q75.norm.EXT", "q90.norm.EXT"))
-    
-    
-    traitcor<- traitcor %>%
-        select(-(.fitted:.std.resid)) %>%
-        group_by(trait) %>%
-        ungroup()%>%
-        tidyr::spread(trait, phenotype) %>%
-        dplyr::ungroup() %>%
-        dplyr::select(cv.EXT:var.TOF)
-    traitcormat <- cor(traitcor, use = "pairwise.complete.obs")
-    reordered <- reorder_cormat(traitcormat)
-    
-    save_plot <- ggplot2::ggplot(data=melt(reordered), ggplot2::aes(Var1,Var2, fill=value^2))+
-        ggplot2::geom_tile() +
-        ggplot2::scale_fill_gradientn(colours=terrain.colors(6), name=expression(bold(italic("r")^2)))+
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(size=10, face = "bold", color="black", angle=60, hjust=1),
-                       axis.text.y = ggplot2::element_text(size=10, face = "bold", color="black"),
-                       plot.title = ggplot2::element_text(size = 12, face = "bold", color = "black", hjust = .5),
-                       panel.background = ggplot2::element_rect(fill = '#E5E8E8'),
-                       legend.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
-                       legend.title = ggplot2::element_text(size = 10, face = "bold", color = "black"))+
-        ggplot2::labs(title=drug, x=NULL, y=NULL)
-    
-    
-    dd <- as.dist((1-traitcormat)/2)
-    hc <- hclust(dd)
-    
-    
-    dend <- ggdendro::ggdendrogram(hc, labels = TRUE, leaf_labels = TRUE) +
-        ggplot2::theme(axis.title.y = ggplot2::element_blank(),
-                       axis.text.x = ggplot2::element_text(size = 8, angle = 45, hjust = 1),
-                       axis.text.y = ggplot2::element_text(size = 8),
-                       plot.margin = unit(c(0,0,0,0), "cm"))
-    
-    print(dend)
-    print(save_plot)
-    
-    cut(stats::dendogram(hc), height = 0.3)
-    # print(cowplot::plot_grid(dend, NULL, save_plot, ncol = 1, nrow = 3, rel_heights = c(8, 1, 10), rel_widths = c(.5,1, 1)))
-    
-    cat("\n\n\n")
-    cat("\n\n\\pagebreak\n")
-        
+for (drug in sort(unique(allRIAILsPC$condition))) {
+
+  traitcor <- splitbydrug[[drug]] %>%
+    dplyr::filter(trait %in% c("n","norm.n", "q10.TOF", "q10.EXT", "q25.TOF", "q25.EXT", "median.TOF", "median.EXT", "mean.TOF", "mean.EXT", "q75.TOF",
+                               "q75.EXT", "q90.TOF", "q90.EXT", "var.TOF", "var.EXT", "cv.TOF", "cv.EXT", "q10.norm.EXT", "q25.norm.EXT", "median.norm.EXT", "mean.norm.EXT",
+                               "q75.norm.EXT", "q90.norm.EXT"))
+  
+  
+  traitcor<- traitcor %>%
+    dplyr::select(-(.fitted:.std.resid)) %>%
+    dplyr::group_by(trait) %>%
+    dplyr::ungroup()%>%
+    tidyr::spread(trait, phenotype) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(cv.EXT:var.TOF)
+  traitcormat <- stats::cor(traitcor, use = "pairwise.complete.obs")
+  reordered <- reorder_cormat(traitcormat)
+  
+  dd <- stats::as.dist((1-traitcormat)/2)
+  hc <- stats::hclust(dd)
+
+  dend <- ggdendro::ggdendrogram(hc, labels = FALSE, leaf_labels = FALSE) +
+    ggplot2::ggtitle(R.utils::capitalize(drug)) +
+    ggplot2::theme(axis.title.y = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank(),
+                   plot.title = ggplot2::element_text(size = 14, face = "bold", hjust = .5),
+                   plot.margin = grid::unit(c(0,0,0,0), "cm"))
+  
+  drugpc <- RIAILPC %>%
+    dplyr::filter(condition == drug)
+  
+  #clusters1 is the Var1 trait and which cluster it is in:
+  #first divide the hc tree into the number of groups you want based on how many significant PCs we have:
+  clusters1 <- data.frame(level1 = stats::cutree(hc, k = length(unique(drugpc$trait)))) %>%
+    dplyr::mutate(Var1 = rownames(.))
+  #then order the traits based on the way they appear in the dendrogram:
+  #extract dendrogram info
+  hc2 <- ggdendro::dendro_data(hc)$labels
+  #factor so you can order them in the heatmap based on this order
+  hc2$label <- factor(hc2$label)
+  #order the traits based on their order in the dendrogram
+  clusters1$Var1 <- factor(clusters1$Var1, levels = hc2$label)
+  #assign cluster groups based on this order that you want the traits (they were grouped by cutree, but group number is not how we want it)
+  clusters1 <- clusters1 %>%
+    dplyr::arrange(Var1) %>%
+    dplyr::group_by(level1)%>%
+    dplyr::mutate(newlev = 1)
+  for(i in 2:nrow(clusters1)){
+    if(clusters1$level1[i] == clusters1$level1[i-1]){
+      clusters1$newlev[i] <- clusters1$newlev[i-1]
+    } else clusters1$newlev[i] <- clusters1$newlev[i-1]+1
+  }
+  #clusters2 is the same thing, but for clustering the y-axis traits in the heatmap
+  clusters2 <- clusters1 %>%
+    dplyr::rename(newlev2 = newlev, Var2 = Var1) %>%
+    dplyr::ungroup()%>%
+    dplyr::select(-level1)
+  #add correlations and the grouping data altogether
+  melted <- data.table::melt(reordered) %>%
+    dplyr::left_join(clusters1)%>%
+    dplyr::left_join(clusters2)
+  #reorder Var2 so white line goes diagonal across whole heat map, not just within facet
+  melted$Var2 <- factor(melted$Var2, levels = rev(clusters2$Var2))
+  
+  traitcorplot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var1, y = Var2, fill=value^2))+
+    ggplot2::geom_tile() +
+    ggplot2::scale_fill_gradientn(colours=terrain.colors(6), name=expression(bold(italic("r")^2)))+
+    ggplot2::scale_x_discrete(position = "top")+
+    ggplot2::facet_grid(newlev2~newlev, scales = "free", space = "free", switch = "x")+
+    ggplot2::theme_bw() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(size=8, color="black",angle = 90, hjust=0),
+          axis.text.y = ggplot2::element_text(size=8, color="black"),
+          panel.background = ggplot2::element_rect(fill = '#E5E8E8'),
+          strip.text = ggplot2::element_blank(),
+          strip.text.y = ggplot2::element_blank(),
+          panel.spacing = grid::unit(1, "pt"),
+          plot.margin = grid::unit(c(-1,0,0,0),"cm"))+
+    ggplot2::labs(title="", x=NULL, y=NULL) 
+  
+  
+  finaldend <- cowplot::plot_grid(NULL, dend, NULL, nrow = 1, ncol = 3, rel_widths = c(.12, 1, .13))
+  finalplot <- cowplot::plot_grid(finaldend, traitcorplot, nrow = 2, ncol = 1, rel_heights = c(.5, 1))
+  
+  print(finalplot)
+
+  cat("\n\n\n")
+  # don't page break on the last drug
+  if(drug != "vincristine") {
+        cat("\n\n\\pagebreak\n")
+  }
 }
 
 ```
 
 **Figure S2** Trait correlations with RIAIL phenotypes. Correlation coefficients (r^2^) between all pairwise combinations of traits based on the RIAIL phenotypes for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes, organized by heirarchical clustering (top) of the correlation matrix (bottom) for each toxin. Colors represent correlation coefficients increasing from green to yellow to pink to white.
 
-```{r s2,warning=F, message=F, echo=F,comment="K",results='asis'}
+```{r s3,warning=F, message=F, echo=F,comment="K",results='asis'}
 library(pander)
 library(stringr)
 library(knitr)
@@ -337,12 +358,13 @@ quick_plot_V <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
                            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
                            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
                            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
-                           strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                           strip.text = ggplot2::element_text(size=titlesize,  color="black"),
                            legend.position="none",
                            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                            panel.background = ggplot2::element_rect(color="black",size=1),
                            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
-            ggplot2::labs(y= ylab, x = "", title = t) 
+            ggplot2::labs(y= ylab, x = "", title = t) +
+            ggplot2::facet_grid(~experiment)
     } else {
         phen_gen$strain <- factor(phen_gen$strain, levels = unique(phen_gen$strain), ordered = T)
         test <- phen_gen %>%
@@ -357,13 +379,14 @@ quick_plot_V <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
                            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
                            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
                            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
-                           strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                           strip.text = ggplot2::element_text(size=titlesize,  color="black"),
                            legend.position="none",
                            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                            panel.background = ggplot2::element_rect(color="black",size=1),
                            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
             #ggplot2::ylim(NA, max(phen_gen$phenotype)*1.7)+
-            ggplot2::labs(y= ylab, x = "", title = t) 
+            ggplot2::labs(y= ylab, x = "", title = t)  +
+            ggplot2::facet_grid(~experiment)
     }
     
     cowplot::ggdraw() +
@@ -409,13 +432,14 @@ quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
                            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
                            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
                            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
-                           strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                           strip.text = ggplot2::element_text(size=titlesize,  color="black"),
                            legend.position="none",
                            plot.margin = ggplot2::margin(t = 0, r = 10, b = 30, l = 0),
                            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                            panel.background = ggplot2::element_rect(color="black",size=1),
                            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
-            ggplot2::labs(y= ylab, x = "", title = t) 
+            ggplot2::labs(y= ylab, x = "", title = t) +
+            ggplot2::facet_grid(~experiment)
     } else{
         test <- phen_gen %>%
             ggplot2::ggplot(.)+
@@ -433,13 +457,14 @@ quick_plot_IVR <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
                            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
                            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
                            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
-                           strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                           strip.text = ggplot2::element_text(size=titlesize,  color="black"),
                            legend.position="none",
                            panel.background = ggplot2::element_rect(color="black",size=1),
                            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
             # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-            ggplot2::labs(y= ylab, x = "", title = t) 
+            ggplot2::labs(y= ylab, x = "", title = t) +
+            ggplot2::facet_grid(~experiment)
     }
     
     cowplot::ggdraw() +
@@ -484,12 +509,13 @@ quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt, t = "CSS"){
                            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
                            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
                            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
-                           strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                           strip.text = ggplot2::element_text(size=titlesize,  color="black"),
                            legend.position="none",
                            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                            panel.background = ggplot2::element_rect(color="black",size=1),
                            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
-            ggplot2::labs(y= ylab, x = "", title = t) 
+            ggplot2::labs(y= ylab, x = "", title = t) +
+            ggplot2::facet_grid(~experiment)
     } else {
         phen_gen$strain <- factor(phen_gen$strain, levels = unique(phen_gen$strain), ordered = T)
         test <- phen_gen %>%
@@ -504,13 +530,14 @@ quick_plot_cssV <- function(cond, pltrt, signif, ylab = pltrt, t = "CSS"){
                            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
                            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
                            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
-                           strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                           strip.text = ggplot2::element_text(size=titlesize,  color="black"),
                            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                            legend.position="none",
                            panel.background = ggplot2::element_rect(color="black",size=1),
                            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
             # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-            ggplot2::labs(y= ylab, x = "", title = t) 
+            ggplot2::labs(y= ylab, x = "", title = t) +
+            ggplot2::facet_grid(~experiment)
     }
     
     cowplot::ggdraw() +
@@ -552,12 +579,13 @@ quick_plot_IVL <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
                            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
                            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
                            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
-                           strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                           strip.text = ggplot2::element_text(size=titlesize,  color="black"),
                            legend.position="none",
                            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                            panel.background = ggplot2::element_rect(color="black",size=1),
                            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
-            ggplot2::labs(y= ylab, x = "", title = t) 
+            ggplot2::labs(y= ylab, x = "", title = t) +
+            ggplot2::facet_grid(~experiment)
     } else {
         test <- phen_gen %>%
             ggplot2::ggplot(.)+
@@ -573,13 +601,14 @@ quick_plot_IVL <- function(cond, pltrt, signif, ylab = pltrt, t = "NIL"){
                            axis.text.y = ggplot2::element_text(size=textsize,  face = "bold", color="black"),
                            axis.title.x = ggplot2::element_text(size=titlesize, color="black", vjust=-.3, face = "bold"),
                            axis.title.y = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
-                           strip.text = ggplot2::element_text(size=titlesize,  color="black", face = "bold"),
+                           strip.text = ggplot2::element_text(size=titlesize,  color="black"),
                            legend.position="none",
                            plot.title = ggplot2::element_text(size=titlesize, color = "black", face = "bold", hjust = 0.5),
                            panel.background = ggplot2::element_rect(color="black",size=1),
                            strip.background = ggplot2::element_rect(color = "black", size = 1)) + 
             # ggplot2::ylim(NA, max(phen_gen$phenotype)*1.5)+
-            ggplot2::labs(y= ylab, x = "", title = t) 
+            ggplot2::labs(y= ylab, x = "", title = t) +
+            ggplot2::facet_grid(~experiment)
     }
     
     cowplot::ggdraw() +
@@ -1192,22 +1221,13 @@ splitmap <- allAnnotatedLods %>%
 
 ```
 
-```{r s2_2,fig.width=7.5, fig.height=3,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
-
-# abbreviate category names for plotting
-plotcat <- assays_category %>%
-    dplyr::mutate(primary_category = case_when(primary_category == "recapitulation" ~ "Recapitulation",
-                                               primary_category == "no_qtl_effect" ~ "No effect",
-                                               primary_category == "unidirectional_transgressive" ~ "Unidirectional",
-                                               primary_category == "bidirectional_transgressive" ~ "Bidirectional",
-                                               primary_category == "miscellaneous" ~ "Miscellaneous",
-                                               primary_category == "parents_not_significant" ~ "No parental diff."))
+```{r s3_2,fig.width=7.5, fig.height=6,warning=F, message=F, echo=F,comment="K",results='asis', dpi = 300}
 
 for(drug in unique(splitmap$condition)) {
     drugmap <- splitmap %>%
         dplyr::filter(condition == drug) %>%
         na.omit() %>%
-        dplyr::distinct(chr, trait, .keep_all = TRUE)
+        dplyr::distinct(marker, trait, .keep_all = TRUE)
     
     for(trt in unique(drugmap$trait)) {
         traitmap <- drugmap %>% 
@@ -1217,115 +1237,36 @@ for(drug in unique(splitmap$condition)) {
         #Mapping
         lod <- maxlodplot_kt(splitmap %>% dplyr::filter(condition == drug, trait == trt))
         VE <- plot_add_int(VE_SE_QTL %>% dplyr::filter(condition == drug, trait == trt))
-        print(cowplot::plot_grid(lod, VE, nrow = 1, ncol = 2, rel_widths = c(5, 1), labels = c("A", "B")))
         
-        #CSS and NILs if applicable
-        count <- 0
-        blankplot <-  ggplot2::ggplot() + theme_bw() + theme(rect = element_blank())
-        for(i in 1:nrow(traitmap)) {
-            test <- traitmap[i,]
-            rilnil_IVL <- NULL
-            rilnil_IVR <- NULL
-            rilnil_V <- NULL
-            css <- ggplot2::ggplot() + ggplot2::geom_blank() + theme(rect = element_blank())
-            nil <- ggplot2::ggplot() + ggplot2::geom_blank() + theme(rect = element_blank())
-            # make ril and NIL (maybe) if in IVL hotspot
-            if(test$chr == "IV" && test$ci_l_pos <= 9334865 && test$ci_r_pos >= 3684741) {
-                if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
-                                                                         dplyr::filter(chr == "IV", ci_l_pos <= 9334865, ci_r_pos >= 3684741) %>% 
-                                                                         dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
-                else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
-                                                                dplyr::filter(chr == "IV", ci_l_pos <= 9334865, ci_r_pos >= 3684741) %>% 
-                                                                dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" ")) }
-                if(drug %in% unique(chrIVLregressed$condition)) { #IVL hotspot
-                    # get category of nil/css trait to add to figure title
-                    nil_cat <- plotcat %>%
-                        dplyr::filter(condition == drug, trait == trt, exp == "IVL") %>%
-                        dplyr::pull(primary_category)
-                    nil <- quick_plot_IVL(drug, trt, plotstats(drug, trt, "IVL"), t = paste("NIL -", nil_cat))
-                } 
-                rilnil_IVL <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
-            } else      
-                # make ril and NIL (maybe) if in IVR hotspot
-                if(test$chr == "IV" && test$ci_l_pos <= 17493829 && test$ci_r_pos >= 12865211) {
-                    if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
-                                                                             dplyr::filter(chr == "IV", ci_l_pos <= 17493829, ci_r_pos >= 12865211) %>%
-                                                                             dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
-                    else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
-                                                                    dplyr::filter(chr == "IV", ci_l_pos <= 17493829, ci_r_pos >= 12865211) %>%
-                                                                    dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" ")) }
-                    if(drug %in% unique(chrIVRregressed$condition)) { #IVR hotspot
-                        # get category of nil/css trait to add to figure title
-                        nil_cat <- plotcat %>%
-                            dplyr::filter(condition == drug, trait == trt, exp == "IVR") %>%
-                            dplyr::pull(primary_category)
-                        nil <- quick_plot_IVR(drug, trt, plotstats(drug, trt, "IVR"), t = paste("NIL -", nil_cat))
-                    } 
-                    rilnil_IVR <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
-                } else
-                    # make ril and NIL (maybe) if in V hotspot
-                    if(test$chr == "V" && test$ci_l_pos <= 13839858 && test$ci_r_pos >= 7082839) {
-                        if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
-                                                                                 dplyr::filter(chr == "V", ci_l_pos <= 13839858, ci_r_pos >= 7082839) %>% 
-                                                                                 dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
-                        else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
-                                                                        dplyr::filter(chr == "V", ci_l_pos <= 13839858, ci_r_pos >= 7082839) %>% 
-                                                                        dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" "))  }
-                        if(drug %in% unique(chrVregressed$condition)) { #V hotspot
-                            # get category of nil/css trait to add to figure title
-                            css_cat <- plotcat %>%
-                                dplyr::filter(condition == drug, trait == trt, exp == "CSSV") %>%
-                                dplyr::pull(primary_category)
-                            nil_cat <- plotcat %>%
-                                dplyr::filter(condition == drug, trait == trt, exp == "V") %>%
-                                dplyr::pull(primary_category)
-                            css <- quick_plot_cssV(drug, trt, plotstats(drug, trt, "CSSV"), t = paste("CSS -", css_cat))
-                            nil <- quick_plot_V(drug, trt, plotstats(drug, trt, "V"), t = paste("NIL - ", nil_cat))
-                        } 
-                        rilnil_V <- cowplot::plot_grid(ril, nil, css, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1))
-                    } else {
-                        # make RIL plot if not in a hotspot
-                        if(count < 1) { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
-                                                                                 dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c("C")) }
-                        else { ril <- cowplot::plot_grid(pxgplot_kt(phenocross, test %>% 
-                                                                        dplyr::mutate(trait = paste0(condition, ".", trait)), ylab = test$trait), labels = c(" ")) }
-                    }
-            
-            #Print all the plots
-            if(is.null(rilnil_IVL) && is.null(rilnil_IVR) && is.null(rilnil_V)) {
-                print(cowplot::plot_grid(ril, blankplot, blankplot, nrow = 1, ncol = 3, rel_widths = c(0.8, 1, 1)))
-            } else
-                if(!is.null(rilnil_IVL)) {
-                    print(rilnil_IVL)
-                } else
-                    if(!is.null(rilnil_IVR)) {
-                        print(rilnil_IVR)
-                    } else
-                        if(!is.null(rilnil_V)) {
-                            print(rilnil_V)
-                        }
-            count <- count + 1
-            cat("\n\n\n")
+        # make blank plots up to 5 for RIAIL phenotype split so they are all even
+        ril <- pxgplot_kt(phenocross, allAnnotatedLods %>% dplyr::filter(trait == paste0(drug, ".", trt)))
+        
+        if(nrow(traitmap) < 5) {
+            ril_plots <- cowplot::plot_grid(ril, rep(NULL, 5-nrow(traitmap)), rel_widths = c(nrow(traitmap), rep(1, 5-nrow(traitmap))))
+        } else {
+            ril_plots <- cowplot::plot_grid(ril)
         }
-        cat("\n\n\n")
-        cat("\n\n\\pagebreak\n")
+        # print figures
+        lod_ve <- cowplot::plot_grid(lod, VE, nrow = 1, ncol = 2, rel_widths = c(5, 1), labels = c("A", "B"))
+        print(cowplot::plot_grid(lod_ve, ril_plots, nrow = 2, ncol = 1, labels = c("", "C")))
+
     }
 }
 
 
 ```
 
-**Figure S2** QTL linkage mapping, NIL and CSS results, and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. For traits in which NILs and CSSs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (TukeyHSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). The category assigned to each assay is marked above each NIL/CSS phenotype plot.
+**Figure S3** QTL linkage mapping and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. 
 
 
-```{r s3,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=8.85}
+```{r s4,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=8}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(cowplot)
 library(Hmisc)
 # source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS4_allAnnotatedLods.Rda?raw=TRUE")
-# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS5_varianceComponents.Rda?raw=TRUE")
+# source_data("https://github.com/AndersenLab/QTLhotspot/blob/master/data/FileS6_varianceComponents.Rda?raw=TRUE")
 
 peaks <- allAnnotatedLods %>%
     na.omit()
@@ -1406,14 +1347,105 @@ print(plot)
 
 ```
 
-**Figure S3** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each of the 47 traits that represent one of the 82 QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
+**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each of the 47 traits that represent one of the 82 QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
 
+```{r s5,warning = F, message = F, echo = F, fig.width = 7.5, fig.height = 3, comment = "K", results = "asis"}
+library(tidyverse)
 
-```{r s4, echo=FALSE, out.width='100%'}
+# abbreviate category names for plotting
+plotcat <- assays_category %>%
+    dplyr::mutate(primary_category = case_when(primary_category == "recapitulation" ~ "Recapitulation",
+                                               primary_category == "no_qtl_effect" ~ "No effect",
+                                               primary_category == "unidirectional_transgressive" ~ "Unidirectional",
+                                               primary_category == "bidirectional_transgressive" ~ "Bidirectional",
+                                               primary_category == "miscellaneous" ~ "Miscellaneous",
+                                               primary_category == "parents_not_significant" ~ "No parental diff."))
+
+# filter to only keep traits that mapped to hotspot that we tested in NILs
+# filter to only keep traits that mapped to hotspot that we tested in NILs
+hotspots <- allAnnotatedLods %>%
+    na.omit() %>%
+    dplyr::mutate(HS_IVL = ifelse(chr == "IV" & ci_l_pos <  9334865 & ci_r_pos > 3684741, T, F),
+                  HS_IVR = ifelse(chr == "IV" & ci_l_pos < 17493829 & ci_r_pos > 12865211, T, F),
+                  HS_V = ifelse(chr == "V" & ci_l_pos < 13839858 & ci_r_pos > 7082839, T, F)) %>%
+    dplyr::filter(HS_IVL | HS_IVR | HS_V) %>%
+    dplyr::mutate(condition = stringr::str_split_fixed(trait, "\\.", 2)[,1]) %>%
+    dplyr::mutate(NIL_test = ifelse(HS_IVL & condition %in% c("silver", "carmustine", "chlorothalonil", "tunicamycin", "cisplatin"), T,
+                                    ifelse(HS_IVR & condition %in% c("diquat", "irinotecan", "chlorothalonil", "fluoxetine", "mechlorethamine"), T, 
+                                           ifelse(HS_V & condition %in% c("cisplatin", "carmustine", "chlorothalonil", "paraquat", "silver"), T, F)))) %>%
+    dplyr::filter(NIL_test == T) %>%
+    dplyr::arrange(condition, trait)
+
+out <- NULL
+for(drug in unique(hotspots$condition)) {
+    drugmap <- hotspots %>%
+        dplyr::filter(condition == drug) %>%
+        na.omit() %>%
+        dplyr::distinct(marker, trait, .keep_all = TRUE)
+    
+    for(trt in unique(drugmap$trait)) {
+        out = c(out, knit_child('~/Dropbox/AndersenLab/QTLpaper/git_repo/QTLhotspot/scripts/figureS5_template.Rmd'))
+    }
+}
+```
+
+`r paste(knit(text = out), collapse = '\n')`
+
+**Figure S5** NIL and CSS phenotypes. For traits in which NILs and CSSs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (TukeyHSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). The category assigned to each assay is marked above each NIL/CSS phenotype plot.
+
+```{r s6, echo=FALSE, out.width='100%'}
 figS5_path <- "https://cdn.rawgit.com/AndersenLab/QTLhotspot/ed981acd/figures/extra/figS5_categorization2.pdf"
 download.file(figS5_path, destfile = "~/Downloads/figS5.pdf")
 knitr::include_graphics("~/Downloads/figS5.pdf")
 
 ```
 
-**Figure S4** NIL and CSS trait categorizations. (**A**) Flowchart for categorizing traits from the NIL or CSS phenotyping assays. (**B**) Six categories across both NIL and CSS assays for traits on chromosome V. The miscellaneous category is not depicted, but encompasses any other combination of NIL and CSS assay results.
+**Figure S6** NIL and CSS trait categorizations. (**A**) Flowchart for categorizing traits from the NIL or CSS phenotyping assays. (**B**) Six categories across both NIL and CSS assays for traits on chromosome V. The miscellaneous category is not depicted, but encompasses any other combination of NIL and CSS assay results.
+
+```{r s7,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=6}
+
+# Look at all traits that are grouped for a QTL and see if there are correlations
+# load("~/Dropbox/AndersenLab/QTLpaper/git_repo/QTLhotspot/data/FileS8_PC_trait_correlation.Rda")
+
+# 18 traits in hotspots that were tested with NILs
+niltest <- PC_trait_correlation %>%
+    dplyr::filter(NIL_test == T, cluster_traits == T)
+
+assays_category <- assays_category %>%
+    tidyr::unite(trait, c("condition", "trait"), sep = ".")
+
+cortrtcat <- left_join(niltest, assays_category) %>%
+    dplyr::filter(exp != "CSSV") %>%
+    dplyr::distinct(PC_trait, trait, exp, .keep_all = T) %>%
+    dplyr::group_by(PC_trait, exp) %>%
+    dplyr::mutate(num_traits = n()) %>%
+    dplyr::group_by(PC_trait, exp, primary_category) %>%
+    dplyr::mutate(num_cat = n()) %>%
+    dplyr::mutate(perc_cat = num_cat / num_traits *100) %>%
+    dplyr::arrange(desc(PC_trait), desc(exp)) %>%
+    dplyr::distinct(PC_trait, exp, primary_category, .keep_all = T)
+
+cortrtcat$PC_trait <- factor(cortrtcat$PC_trait, levels = unique(cortrtcat$PC_trait))
+cortrtcat$primary_category <- factor(cortrtcat$primary_category, levels = c("parents_not_significant", "miscellaneous", "bidirectional_transgressive", "unidirectional_transgressive", "no_qtl_effect", "recapitulation"), labels = c("Parents Not Significant", "Miscellaneous", "Bidirectional Transgressive",
+                                                                                                                                                                                                                                      "Unidirectional Transgressive", "No Qtl Effect", "Recapitulation"))
+
+# stacked barchart
+corgroupplot <- ggplot2::ggplot(data = cortrtcat, ggplot2::aes(x = PC_trait, y = perc_cat)) +
+    ggplot2::geom_bar(aes(fill = primary_category), stat = "identity") +
+    ggplot2::scale_fill_manual(values = c(Recapitulation = "forestgreen", `No Qtl Effect` = "darkred", `Unidirectional Transgressive` = "steelblue1",
+                                          `Bidirectional Transgressive` = "steelblue4", `Miscellaneous` = "grey75", `Parents Not Significant` = "grey51"),
+                               name = "Category", limits = c("Recapitulation", "No Qtl Effect", "Unidirectional Transgressive", "Bidirectional Transgressive",
+                                                             "Miscellaneous", "Parents Not Significant"))+
+    ggplot2::geom_text(ggplot2::aes(label = num_traits, y = 95), color = "white") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.5), 
+                   axis.text = ggplot2::element_text(size = 10, face = "bold", color = "black"),
+                   axis.title = ggplot2::element_text(size = 12, face = "bold", color = "black")) +
+    ggplot2::labs(y = "Percent of traits", x = "Principal Component") +
+    ggplot2::coord_flip() + 
+    ggplot2::facet_grid(factor(exp)~., scales = "free", space = "free")
+print(corgroupplot)
+
+```
+
+**Figure S7** Categorization of correlated traits. The y-axis shows the principal component, split by hotspot. Each color represents the NIL assay categorization for each trait within a correlation cluster - either recapitulation (green), no QTL effect (red), unidirectional transgressive phenotype (light blue), bidirectional transgressive phenotype (dark blue), miscellaneous (light grey) or no significant parental difference (dark grey). The percent of all traits within the correlation cluster for each principal component that falls within a given category is shown on the y-axis. Numbers above each bar indicate the number of traits within a correlation cluster.

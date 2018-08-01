@@ -1,0 +1,72 @@
+
+# `r trt`
+
+```{r, warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=2.5}
+
+# for each trait
+traitmap <- PC_trait_correlation %>% 
+    dplyr::filter(PC_trait == trt, cluster_traits == TRUE) %>%
+    dplyr::mutate(condition = stringr::str_split_fixed(trait, "\\.", 2)[,1],
+                  drugtrait = trait,
+                  trait = stringr::str_split_fixed(trait, "\\.", 2)[,2])
+
+# Split by hotspot
+IVL <- traitmap %>%
+    dplyr::filter(HS_IVL == TRUE)
+IVR <- traitmap %>%
+    dplyr::filter(HS_IVR == TRUE)
+V <- traitmap %>%
+    dplyr::filter(HS_V == TRUE)
+
+# If we tested for IVL, show NILs
+if(nrow(IVL) > 0) {
+    # loop through each trait for the PC/hotspot
+    for(i in 1:nrow(IVL)) {
+        # get category of nil/css trait to add to figure title
+        nil_cat <- plotcat %>%
+            dplyr::filter(condition == drug, trait == IVL$trait[i], exp == "IVL") %>%
+            dplyr::pull(primary_category)
+        nil <- quick_plot_IVL(drug, IVL$trait[i], plotstats(drug, IVL$trait[i], "IVL"), t = paste("NIL -", nil_cat))
+        print(cowplot::plot_grid(nil, NULL, nrow = 1, ncol = 2))
+        cat("\n\n\n")
+    }
+    
+}
+# If we tested for IVR, show NILs
+if(nrow(IVR) > 0) {
+    # loop through each trait for the PC/hotspot
+    for(i in 1:nrow(IVR)) {
+        # get category of nil/css trait to add to figure title
+        nil_cat <- plotcat %>%
+            dplyr::filter(condition == drug, trait == IVR$trait[i], exp == "IVR") %>%
+            dplyr::pull(primary_category)
+        nil <- quick_plot_IVR(drug, IVR$trait[i], plotstats(drug, IVR$trait[i], "IVR"), t = paste("NIL -", nil_cat))
+        print(cowplot::plot_grid(nil, NULL, nrow = 1, ncol = 2))
+        cat("\n\n\n")
+    }
+    
+}
+# If we tested for V, show NILs and CSS
+if(nrow(V) > 0) {
+    # loop through each trait for the PC/hotspot
+    for(i in 1:nrow(V)) {
+        css_cat <- plotcat %>%
+            dplyr::filter(condition == drug, trait == V$trait[i], exp == "CSSV") %>%
+            dplyr::pull(primary_category)
+        nil_cat <- plotcat %>%
+            dplyr::filter(condition == drug, trait == V$trait[i], exp == "V") %>%
+            dplyr::pull(primary_category)
+        css <- quick_plot_cssV(drug, V$trait[i], plotstats(drug, V$trait[i], "CSSV"), t = paste("CSS -", css_cat))
+        nil <- quick_plot_V(drug, V$trait[i], plotstats(drug, V$trait[i], "V"), t = paste("NIL - ", nil_cat))
+        print(cowplot::plot_grid(nil, css, nrow = 1, ncol = 2))
+        cat("\n\n\n")
+    }
+}
+
+cat("\n\n\n")
+# don't page break on the last trait
+if(trt != "tunicamycin.PC3") {
+    cat("\n\n\\pagebreak\n")
+}
+
+```
