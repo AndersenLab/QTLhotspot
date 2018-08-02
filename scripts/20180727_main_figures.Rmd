@@ -1054,9 +1054,9 @@ plotstats <- function(drug, trt, expr) {
 categories <- assays_category %>%
     na.omit() %>%
     dplyr::mutate(drugtrait = paste0(condition, ".", trait)) %>%
-    dplyr::filter(drugtrait %in% c("cisplatin.norm.n", "cisplatin.q90.TOF", "carmustine.median.EXT", "silver.median.TOF")) %>%
+    dplyr::filter(drugtrait %in% c("cisplatin.norm.n", "cisplatin.q90.EXT", "carmustine.median.EXT", "silver.median.TOF")) %>%
     dplyr::mutate(PC_trait = case_when(drugtrait == "cisplatin.norm.n" ~ "cisplatin.PC4",
-                                       drugtrait == "cisplatin.q90.TOF" ~ "cisplatin.PC1",
+                                       drugtrait == "cisplatin.q90.EXT" ~ "cisplatin.PC1",
                                        drugtrait == "carmustine.median.EXT" ~ "carmustine.PC1",
                                        drugtrait == "silver.median.TOF" ~ "silver.PC1")) %>%
     dplyr::distinct(PC_trait, .keep_all = T)
