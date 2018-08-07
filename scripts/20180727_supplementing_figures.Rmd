@@ -266,7 +266,7 @@ for (drug in sort(unique(allRIAILsPC$condition))) {
 
 ```
 
-**Figure S2** Trait correlations with RIAIL phenotypes. Correlation coefficients (r^2^) between all pairwise combinations of traits based on the RIAIL phenotypes for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes, organized by heirarchical clustering (top) of the correlation matrix (bottom) for each toxin. Colors represent correlation coefficients increasing from green to yellow to pink to white.
+**Figure S2** Trait correlations with RIAIL phenotypes. Correlation coefficients (r^2^) between all pairwise combinations of traits based on the RIAIL phenotypes for the indicated concentration of the toxin are plotted as a heat map. Traits are labeled on the x- and y-axes, organized by hierarchical clustering (top) of the correlation matrix (bottom) for each toxin. Colors represent correlation coefficients increasing from green to yellow to pink to white.
 
 ```{r s3,warning=F, message=F, echo=F,comment="K",results='asis'}
 library(pander)
@@ -1256,7 +1256,7 @@ for(drug in unique(splitmap$condition)) {
 
 ```
 
-**Figure S3** QTL linkage mapping and variance component contributions. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. 
+**Figure S3** Linkage mapping results and variance component contributions for 47 principal components with a signficant QTL. (**A**) The maximum LOD score (y-axis) for each marker across the genome (x-axis), split by chromosome, is plotted as a black line. Significant QTL are indicated by a red triangle at the marker with the maximum LOD score and a light blue ribbon spanning the 95% confidence interval. The estimated phenotypic variation in the RIAILs explained by each QTL is indicated above each peak. (**B**) The proportion of phenotypic variation across the RIAILs caused by additive (light blue) and interactive (dark blue) genetic components are indicated. Solid and dashed error bars show the standard error around additive and interactive component estimates, respectively. (**C**) For each QTL plotted in A, the residual phenotypes (y-axis) of RIAILs split by genotype at the marker with the maximum LOD score (x-axis) are plotted as Tukey box plots. Data from RIAILs with the N2 or the CB4856 allele at the QTL peak marker are colored in orange and blue, respectively. 
 
 
 ```{r s4,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=8}
@@ -1347,7 +1347,7 @@ print(plot)
 
 ```
 
-**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each of the 47 traits that represent one of the 82 QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given trait (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
+**Figure S4** Additive and interactive genetic components. The proportion of phenotypic variation predicted to be caused by additive and interactive genetic components is shown for each of the 47 traits that represent the 82 QTL identified by linkage mapping. For each toxin, the fraction of phenotypic variation (x-axis) in a given principal component (y-axis) that is attributable to additive (light blue) versus interactive (dark blue) genetic components is shown as a stacked bar plot. Solid and dashed error bars show the standard error around the mean of additive and interactive components, respectively.
 
 ```{r s5,warning = F, message = F, echo = F, fig.width = 7.5, fig.height = 3, comment = "K", results = "asis"}
 library(tidyverse)
@@ -1391,7 +1391,7 @@ for(drug in unique(hotspots$condition)) {
 
 `r paste(knit(text = out), collapse = '\n')`
 
-**Figure S5** NIL and CSS phenotypes. For traits in which NILs and CSSs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (TukeyHSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). The category assigned to each assay is marked above each NIL/CSS phenotype plot.
+**Figure S5** NIL and CSS phenotypes. For traits in which NILs and CSSs were assayed, the residual phenotypic values (y-axis) of N2, CB4856, and reciprocal introgressed NILs or CSSs are plotted as Tukey box plots. Different letters represent significant differences (p<0.05) between strains (TukeyHSD). The genotype of each strain on the x-axis is modeled by the colored rectangles beneath the plots (N2 genotypes are orange, CB4856 genotypes are blue). The category assigned to each test of recapitulation of QTL effect is marked above each NIL/CSS phenotype plot. Traits are grouped by the principal component they were selected to represent, based on correlation clusters from Figure S2.
 
 ```{r s6, echo=FALSE, out.width='100%'}
 figS5_path <- "https://cdn.rawgit.com/AndersenLab/QTLhotspot/ed981acd/figures/extra/figS5_categorization2.pdf"
@@ -1400,7 +1400,7 @@ knitr::include_graphics("~/Downloads/figS5.pdf")
 
 ```
 
-**Figure S6** NIL and CSS trait categorizations. (**A**) Flowchart for categorizing traits from the NIL or CSS phenotyping assays. (**B**) Six categories across both NIL and CSS assays for traits on chromosome V. The miscellaneous category is not depicted, but encompasses any other combination of NIL and CSS assay results.
+**Figure S6** NIL and CSS trait categorizations. (**A**) Flowchart for categorizing traits from the NIL or CSS tests of recapitulation of QTL effects. (**B**) Six potential categories for chromosome V traits tested in both NIL and CSS assays with a significant and consistent parental phenotpic split across both assays. The miscellaneous category is not depicted, but encompasses any other combination of NIL and CSS assay results.
 
 ```{r s7,warning=F, message=F, echo=F,comment="K",results='asis',fig.width=7.5, fig.height=6}
 
@@ -1448,4 +1448,4 @@ print(corgroupplot)
 
 ```
 
-**Figure S7** Categorization of correlated traits. The y-axis shows the principal component, split by hotspot. Each color represents the NIL assay categorization for each trait within a correlation cluster - either recapitulation (green), no QTL effect (red), unidirectional transgressive phenotype (light blue), bidirectional transgressive phenotype (dark blue), miscellaneous (light grey) or no significant parental difference (dark grey). The percent of all traits within the correlation cluster for each principal component that falls within a given category is shown on the y-axis. Numbers above each bar indicate the number of traits within a correlation cluster.
+**Figure S7** Categorization of correlated traits. The y-axis shows the principal component tested in NIL assays, split by hotspot. Each color represents the NIL assay categorization for each trait within a correlation cluster - either recapitulation (green), no QTL effect (red), unidirectional transgressive phenotype (light blue), bidirectional transgressive phenotype (dark blue), miscellaneous (light grey) or no significant parental difference (dark grey). The percent of all traits within the correlation cluster for each principal component that falls within a given category is shown on the y-axis. Numbers on the right of each bar indicate the number of traits within a correlation cluster.
